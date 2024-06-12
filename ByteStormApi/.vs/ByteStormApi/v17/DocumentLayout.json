@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|c:\\users\\jormo\\desktop\\jorge\\practicas\\bytestormsolutions\\bytestormapi\\bytestormapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|solutionrelative:bytestormapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\appsettings.json",
+              "RelativeDocumentMoniker": "ByteStormApi\\appsettings.json",
+              "ToolTip": "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\appsettings.json",
+              "RelativeToolTip": "ByteStormApi\\appsettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-06-12T11:09:42.71Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
