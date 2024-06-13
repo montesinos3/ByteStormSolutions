@@ -9,9 +9,9 @@ namespace ByteStormApi.Models
         public string? Descripcion { get; set; }
         public string? Estado { get; set; } //cambiar por enum !!!!!!!!!!!!!!!!!
 
-        public virtual List<Equipo> Equipos { get; set; }
+        public virtual List<Equipo>? Equipos { get; set; }
 
-        public long IdOperativo { get; set; }
-        public virtual Operativo Operativo { get; set; }    
+        public long? IdOperativo { get; set; }
+        public virtual Operativo? Operativo { get; set; }    
     }
 }

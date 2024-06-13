@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ByteStormApi.Models;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -8,7 +9,11 @@ var URLPermitidas = builder.Configuration.GetSection("AllowedHosts").Value.Split
 
 // Add services to the container.
 
-builder.Services.AddControllers(); 
+builder.Services.AddControllersWithViews().AddJsonOptions( options => {
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    options.JsonSerializerOptions.MaxDepth = 0;
+
+}); 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

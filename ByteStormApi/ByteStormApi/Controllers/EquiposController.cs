@@ -20,16 +20,17 @@ public class EquiposController : ControllerBase
 
     // GET: api/Equipos
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Equipo>>> GetEquipos()
+    public async Task<ActionResult<IEnumerable<EquipoDTO>>> GetEquipos()
     {
         return await _context.Equipos
+            .Select(x => ItemToDTO(x))
             .ToListAsync();
     }
 
     // GET: api/Equipos/5
     // <snippet_GetByID>
     [HttpGet("{id}")]
-    public async Task<ActionResult<Equipo>> GetEquipo(long id)
+    public async Task<ActionResult<EquipoDTO>> GetEquipo(long id)
     {
         var equipo = await _context.Equipos.FindAsync(id);
 
@@ -38,7 +39,7 @@ public class EquiposController : ControllerBase
             return NotFound();
         }
 
-        return equipo;
+        return ItemToDTO(equipo);
     }
     // </snippet_GetByID>
 
@@ -46,9 +47,9 @@ public class EquiposController : ControllerBase
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     // <snippet_Update>
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutEquipo(long id, Equipo _equipo)
+    public async Task<IActionResult> PutEquipo(long id, EquipoDTO equipoDTO)
     {
-        if (id != _equipo.Id)
+        if (id != equipoDTO.Id)
         {
             return BadRequest();
         }
@@ -59,11 +60,10 @@ public class EquiposController : ControllerBase
             return NotFound();
         }
 
-        equipo.Descripcion = _equipo.Descripcion;
-        equipo.Estado = _equipo.Estado;
-        equipo.Tipo = _equipo.Tipo;
-        equipo.Mision = _equipo.Mision;
-        equipo.IdMision = _equipo.Mision.Id;
+        equipo.Descripcion = equipoDTO.Descripcion;
+        equipo.Estado = equipoDTO.Estado;
+        equipo.Tipo = equipoDTO.Tipo;
+        equipo.IdMision = equipoDTO.IdMision;
 
         try
         {
@@ -82,15 +82,14 @@ public class EquiposController : ControllerBase
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     // <snippet_Create>
     [HttpPost]
-    public async Task<ActionResult<Equipo>> PostEquipo(Equipo _equipo)
+    public async Task<ActionResult<EquipoDTO>> PostEquipo(EquipoDTO equipoDTO)
     {
         var equipo = new Equipo
         {
-            Descripcion = _equipo.Descripcion,
-            Estado = _equipo.Estado,
-            Tipo = _equipo.Tipo,
-            Mision = _equipo.Mision,
-            IdMision = _equipo.Mision.Id
+            Descripcion = equipoDTO.Descripcion,
+            Estado = equipoDTO.Estado,
+            Tipo = equipoDTO.Tipo,
+            IdMision = equipoDTO.IdMision
         };
 
         _context.Equipos.Add(equipo);
@@ -98,7 +97,8 @@ public class EquiposController : ControllerBase
 
         return CreatedAtAction(
             nameof(GetEquipo),
-            new { id = equipo.Id }
+            new { id = equipo.Id },
+            ItemToDTO(equipo)
             );
     }
     // </snippet_Create>
@@ -123,4 +123,14 @@ public class EquiposController : ControllerBase
     {
         return _context.Equipos.Any(e => e.Id == id);
     }
+
+    private static EquipoDTO ItemToDTO(Equipo equipo) =>
+       new EquipoDTO
+       {
+           Id = equipo.Id,
+           Tipo = equipo.Tipo,
+           Descripcion = equipo.Descripcion,
+           Estado = equipo.Estado,
+           IdMision = equipo.IdMision
+       };
 }

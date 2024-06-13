@@ -6,27 +6,28 @@ namespace ByteStormApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-    public class ByteStormController : ControllerBase
+    public class OperativoController : ControllerBase
     {
         private readonly ByteStormContext _context;
 
-        public ByteStormController(ByteStormContext context)
+        public OperativoController(ByteStormContext context)
         {
             _context = context;
         }
 
         // GET: api/Operativos
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Operativo>>> GetOperativos()
+        public async Task<ActionResult<IEnumerable<OperativoDTO>>> GetOperativos()
         {
             return await _context.Operativos
+                .Select(x=>ItemToDTO(x))
                 .ToListAsync();
         }
 
         // GET: api/Operativos/5
         // <snippet_GetByID>
         [HttpGet("{id}")]
-        public async Task<ActionResult<Operativo>> GetOperativo(long id)
+        public async Task<ActionResult<OperativoDTO>> GetOperativo(long id)
         {
             var operativo = await _context.Operativos.FindAsync(id);
 
@@ -35,7 +36,7 @@ namespace ByteStormApi.Controllers;
                 return NotFound();
             }
 
-            return operativo;
+            return ItemToDTO(operativo);
         }
         // </snippet_GetByID>
 
@@ -43,9 +44,9 @@ namespace ByteStormApi.Controllers;
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         // <snippet_Update>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOperativo(long id, Operativo _operativo)
+        public async Task<IActionResult> PutOperativo(long id, Operativo operativoDTO)
         {
-            if (id != _operativo.Id)
+            if (id != operativoDTO.Id)
             {
                 return BadRequest();
             }
@@ -56,11 +57,20 @@ namespace ByteStormApi.Controllers;
                 return NotFound();
             }
 
-                operativo.Nombre = _operativo.Nombre;
-                operativo.Rol = _operativo.Rol;
-                operativo.Misiones = _operativo.Misiones;
+            operativo.Nombre = operativoDTO.Nombre;
+            operativo.Rol = operativoDTO.Rol;
 
-            try
+            if (operativoDTO.Misiones != null)
+            {
+                for (int i = 0; i < operativoDTO.Misiones.Count; i++)
+                {
+                    var aux = _context.Misiones.Find(operativoDTO.Misiones[i]);
+                    if (aux != null)
+                        operativo.Misiones.Add(aux);
+                }
+            }
+
+        try
             {
                 await _context.SaveChangesAsync();
             }
@@ -77,21 +87,31 @@ namespace ByteStormApi.Controllers;
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         // <snippet_Create>
         [HttpPost]
-        public async Task<ActionResult<Operativo>> PostOperativo(Operativo _operativo)
+        public async Task<ActionResult<OperativoDTO>> PostOperativo(OperativoDTO operativoDTO)
         {
             var operativo = new Operativo
             {
-                Rol = _operativo.Rol,
-                Nombre = _operativo.Nombre,
-                Misiones = _operativo.Misiones
+                Rol = operativoDTO.Rol,
+                Nombre = operativoDTO.Nombre,
             };
+
+        if (operativoDTO.Misiones != null)
+        {
+            for (int i = 0; i < operativoDTO.Misiones.Count; i++)
+            {
+                var aux = _context.Misiones.Find(operativoDTO.Misiones[i]);
+                if (aux != null)
+                operativo.Misiones.Add(aux);
+            }
+        }
 
             _context.Operativos.Add(operativo);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(
                 nameof(GetOperativo),
-                new { id = operativo.Id }
+                new { id = operativo.Id },
+                ItemToDTO(operativo)
                 );
         }
         // </snippet_Create>
@@ -100,7 +120,7 @@ namespace ByteStormApi.Controllers;
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOperativo(long id)
         {
-            var operativo = await _context.Operativos.FindAsync(id);
+            var operativo = _context.Operativos.Find(id);
             if (operativo == null)
             {
                 return NotFound();
@@ -116,4 +136,12 @@ namespace ByteStormApi.Controllers;
         {
             return _context.Operativos.Any(o => o.Id == id);
         }
+
+        private static OperativoDTO ItemToDTO(Operativo operativo) =>
+        new OperativoDTO
+        {
+            Id = operativo.Id,
+            Nombre = operativo.Nombre,
+            Rol = operativo.Rol
+        };
 }

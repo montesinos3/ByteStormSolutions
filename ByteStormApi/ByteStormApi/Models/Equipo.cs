@@ -11,7 +11,7 @@ namespace ByteStormApi.Models
         public string? Estado { get; set; } //cambiar por enum !!!!!!!!!!!!!!!!!
 
 
-        public long IdMision { get; set; }
-        public virtual Mision Mision{ get; set; }
+        public long? IdMision { get; set; }
+        public virtual Mision? Mision { get; set; }
     }
 }

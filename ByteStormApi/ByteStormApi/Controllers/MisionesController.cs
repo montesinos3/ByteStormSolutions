@@ -18,16 +18,17 @@ public class MisionesController : ControllerBase
 
     // GET: api/Misiones
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Mision>>> GetMisiones()
+    public async Task<ActionResult<IEnumerable<MisionDTO>>> GetMisiones()
     {
         return await _context.Misiones
+            .Select(X=>ItemToDTO(X))
             .ToListAsync();
     }
 
     // GET: api/Misiones/5
     // <snippet_GetByID>
     [HttpGet("{id}")]
-    public async Task<ActionResult<Mision>> GetMision(long id)
+    public async Task<ActionResult<MisionDTO>> GetMision(long id)
     {
         var mision = await _context.Misiones.FindAsync(id);
 
@@ -36,7 +37,7 @@ public class MisionesController : ControllerBase
             return NotFound();
         }
 
-        return mision;
+        return ItemToDTO(mision);
     }
     // </snippet_GetByID>
 
@@ -44,9 +45,9 @@ public class MisionesController : ControllerBase
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     // <snippet_Update>
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutMision(long id, Mision _mision)
+    public async Task<IActionResult> PutMision(long id, MisionDTO misionDTO)
     {
-        if (id != _mision.Id)
+        if (id != misionDTO.Id)
         {
             return BadRequest();
         }
@@ -57,11 +58,19 @@ public class MisionesController : ControllerBase
             return NotFound();
         }
 
-        mision.Descripcion = _mision.Descripcion;
-        mision.Estado = _mision.Estado;
-        mision.Equipos = _mision.Equipos;
-        mision.Operativo = _mision.Operativo;
-        mision.IdOperativo = _mision.Operativo.Id;
+        mision.Descripcion = misionDTO.Descripcion;
+        mision.Estado = misionDTO.Estado;
+        mision.IdOperativo = misionDTO.IdOperativo;
+
+        if (misionDTO.Equipos != null)
+        {
+            for (int i = 0; i < misionDTO.Equipos.Count; i++)
+            {
+                var aux = _context.Equipos.Find(misionDTO.Equipos[i]);
+                if (aux != null)
+                    mision.Equipos.Add(aux);
+            }
+        }
 
         try
         {
@@ -80,23 +89,32 @@ public class MisionesController : ControllerBase
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     // <snippet_Create>
     [HttpPost]
-    public async Task<ActionResult<Mision>> PostMision(Mision _mision)
+    public async Task<ActionResult<MisionDTO>> PostMision(MisionDTO misionDTO)
     {
         var mision = new Mision
         {
-            Descripcion = _mision.Descripcion,
-            Estado = _mision.Estado,
-            Equipos = _mision.Equipos,
-            Operativo = _mision.Operativo,
-            IdOperativo = _mision.Operativo.Id
+            Descripcion = misionDTO.Descripcion,
+            Estado = misionDTO.Estado,
+            IdOperativo = misionDTO.IdOperativo
         };
+
+        if (misionDTO.Equipos != null)
+        {
+            for (int i = 0; i < misionDTO.Equipos.Count; i++)
+            {
+                var aux = _context.Equipos.Find(misionDTO.Equipos[i]);
+                if (aux != null)
+                    mision.Equipos.Add(aux);
+            }
+        }
 
         _context.Misiones.Add(mision);
         await _context.SaveChangesAsync();
 
         return CreatedAtAction(
             nameof(GetMision),
-            new { id = mision.Id }
+            new { id = mision.Id },
+            ItemToDTO(mision)
             );
     }
     // </snippet_Create>
@@ -121,4 +139,13 @@ public class MisionesController : ControllerBase
     {
         return _context.Misiones.Any(m => m.Id == id);
     }
+
+    private static MisionDTO ItemToDTO(Mision mision) =>
+       new MisionDTO
+       {
+           Id = mision.Id,
+           Descripcion = mision.Descripcion,
+           Estado = mision.Estado,
+           IdOperativo = mision.IdOperativo
+       };
 }
