@@ -1,27 +1,21 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 
 let newNombre = ref('')
 let newRol = ref('')
 let newMision = ref('')
-let OperativosEditados = []
+let editedOperativos = []
 const showEdit = ref([])
 
-let todos = ref([])
+let operativos = ref([])
 onMounted(async () => {
-    let res = await fetch("http://localhost:7208/api/Operativos").catch(error=>alert(`Error al cargar: ${error}`))
+    let res = await fetch("https://localhost:7208/api/Operativo").catch(error=>alert(`Error al cargar: ${error}`))
     let data = await res.json()
-    todos.value = data
+    operativos.value = data
 })
 
- let filteredTodos = computed(() => {
-    return hideCompleted.value
-      ? todos.value.filter((t) => !t.isComplete)
-      : todos.value
- })
-
-async function addTodo() {
-  let aux = { name: newTodo.value, isComplete: false }
+async function addOperativo() {
+  let aux = { nombre: newNombre.value, rol: newRol.value}
   let json={
     method: 'POST',
     headers: {
@@ -30,78 +24,79 @@ async function addTodo() {
     body: JSON.stringify(aux)
   }
 
-  let response = await fetch("http://localhost:7208/api/Operativos", json).catch(error=>alert(error))
+  let response = await fetch("https://localhost:7208/api/Operativo", json).catch(error=>alert(error))
   let data = await response.json()
-  todos.value.push(data)
-  newTodo.value=''
+  operativos.value.push(data)
+  newNombre.value=''
+  newRol.value=''
 }
 
-async function removeTodo(id) {
-  const res = await fetch(`http://localhost:7208/api/Operativos/${id}`, {
+async function removeOperativo(id) {
+  const res = await fetch(`https://localhost:7208/api/Operativo/${id}`, {
     method: 'DELETE',
   })
   if(res.status==204 || res.status==200){
     //eliminar todo por id
-    todos.value = todos.value.filter(t=>t.id != id)
+    operativos.value = operativos.value.filter(o=>o.id != id)
   } else{
-    alert("Error al eliminar todo")
+    alert("Error al eliminar operativo")
   }
 }
 
-async function editTodo(todo) {
-  let aux = { id: todo.id, name: editedTodo[todo.id], isComplete: todo.isComplete}
-  let json={
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json;charset=utf-8'
-    },
-    body: JSON.stringify(aux)
-  }
+async function editOperativo(operativo) {
+  // let aux = { id: operativo.id, 
+  //   name: (editOperativo[operativo.id].nombre!=null) ? editOperativo[operativo.id].nombre : operativo.nombre, 
+  //   rol: (editOperativo[operativo.id].rol!=null) ? editOperativo[operativo.id].rol : operativo.rol
+  // }
+  // let json={
+  //   method: 'PUT',
+  //   headers: {
+  //     'Content-Type': 'application/json;charset=utf-8'
+  //   },
+  //   body: JSON.stringify(aux)
+  // }
+  // let res = await fetch(`https://localhost:7208/api/Operativo/${operativo.id}`, json).catch(error=>alert(error))
   
-  console.log("El antiguo nombre es: ", todo.name)
-  console.log("El nuevo nombre es: ", editedTodo[todo.id])
-  let res = await fetch(`http://localhost:7208/api/Operativos/${todo.id}`, json).catch(error=>alert(error))
-  
-  if(res.status==204 || res.status==200){
-    //eliminar todo por id
-    // let index=todos.value.findIndex((t)=>t.id==todo.id)
-    // todos.value.splice(index,1)
-    //insertar el nuevo todo
-    // todos.push(data)
-    todos.value.find((t)=>t.id==todo.id).name = editedTodo[todo.id]
-    console.log("Se ha cambiado el todo.value: ", todos.value.find((t)=>t.id==todo.id).value.name)
-  } else{
-    alert("Error al editar todo")
-  }
-  editedTodo[todo.id]=''
+  // if(res.status==204 || res.status==200){
+  //   //eliminar todo por id
+  //   // let index=todos.value.findIndex((t)=>t.id==todo.id)
+  //   // todos.value.splice(index,1)
+  //   //insertar el nuevo todo
+  //   // todos.push(data)
+  //   operativos.value.find((o)=>o.id==operativo.id) = editedOperativos[operativo.id]
+  // } else{
+  //   alert("Error al editar operativo")
+  // }
+  // editedOperativos[operativo.id]=''
 }
 
 </script>
 
 <template>
-  <form @submit.prevent="addTodo">
-    <input v-model="newTodo" required placeholder="new todo">
-    <button>Add Todo</button> 
-  </form>
-    <ul>
-        <li v-for="todo in filteredTodos" :key="todo.id">
-        <input type="checkbox" v-model="todo.isComplete"> 
-        <span :class="{ done: todo.isComplete }">{{ todo.name }}</span> 
-        <button @click="removeTodo(todo.id)">X</button> 
-        <button @click="showEdit[todo.id] = !showEdit[todo.id]">
-          <img src="../../icons/lapiz.png" alt="edit">
-        </button> 
-        <form @submit.prevent="editTodo(todo)" v-show="showEdit[todo.id]">
-          <input v-model="editedTodo[todo.id]" required placeholder="Edit your todo" > 
-          
-          <button>Edit Todo</button> 
-        </form>
-        
+  <v-form @submit.prevent="addOperativo">
+    <input class="mx-5 w-25 px-4 bg-grey-darken-1" v-model="newNombre" required placeholder="nuevo nombre para operativo">
+    <input class="mx-5 px-4 bg-grey-darken-1" v-model="newRol" required placeholder="nuevo rol para operativo">
+    <v-btn type="submit">Añadir Operativo</v-btn> 
+  </v-form>
+    <ul> <!-- Probar a hacer una tabla -->
+        <li>
+          <span class="mr-5">Nombre</span>
+          <span class="mr-5">Rol</span>
+        </li>
+        <li v-for="operativo in operativos" :key="operativo.id">
+        <span class="mr-5">{{ operativo.nombre }}</span>
+        <span class="mr-5">{{ operativo.rol }}</span>
+        <v-btn @click="removeOperativo(operativo.id)" class="ml-5 bg-red">X</v-btn> 
+        <v-btn @click="showEdit[operativo.id] = !showEdit[operativo.id]" class="bg-green"> <!-- Hacer una nueva pag/componente para el edit -->
+          <img src="@/assets/lapiz.png" alt="edit">
+        </v-btn>
+        <!-- <v-form @submit.prevent="editOperativo(operativo)" v-show="showEdit[operativo.id]">
+          <input v-model="editedOperativos[operativo.id].nombre" placeholder="Edita el nombre del operativo">
+          <input v-model="editedOperativos[operativo.id].rol" placeholder="Edita el rol del operativo">
+          <v-btn type="submit">Editar</v-btn> 
+        </v-form> -->
         </li>
     </ul>
-    <button @click="hideCompleted = !hideCompleted">
-        {{ hideCompleted ? 'Show all' : 'Hide completed' }}
-    </button>
 </template>
 
 <style scoped>
@@ -109,7 +104,14 @@ async function editTodo(todo) {
   text-decoration: line-through;
 }
 img{
-  width:12px;
-  height: 12px;
+  width:20px;
+  height: 20px;
+}
+ul{
+  background-color: rgb(155, 155, 150);
+  width: fit-content;
+  margin-left: 20px;
+  list-style: none;
+  padding-left: 0%;
 }
 </style>

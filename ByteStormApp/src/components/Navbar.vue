@@ -18,45 +18,45 @@
         <v-btn icon="mdi-dots-vertical" variant="text"></v-btn>
       </v-app-bar>
 
-      <v-navigation-drawer
-        v-model="drawer"
-        :location="$vuetify.display.mobile ? 'bottom' : undefined"
-        temporary
-      >
-        <v-list
-          :items="items"
-        ></v-list>
+      <v-navigation-drawer v-model="drawer" :location="undefined" temporary>
+        <v-list>
+          <v-list-item v-for="item in items" :key="item.value">
+            <router-link :to="item.to">
+                <v-btn>
+                <v-list-item-content>
+                  <v-list-item-title>{{ item.title }}</v-list-item-title>
+                </v-list-item-content>
+              </v-btn>
+            </router-link>
+          </v-list-item>
+        </v-list>
       </v-navigation-drawer>
 </template>
 
-<script>
-  export default {
-    data: () => ({
-      drawer: false,
-      group: null,
-      items: [
-        {
-          title: 'Operativos',
-          value: 'Operativos',
-          ref: "./Operativo.vue",
-        },
-        {
-          title: 'Misiones',
-          value: 'Misones',
-          ref: "./Mision.vue",
-        },
-        {
-          title: 'Equipos',
-          value: 'Equipos',
-          ref: "./Equipo.vue",
-        },
-      ],
-    }),
+<script setup>
+import { ref, reactive, watch } from 'vue'
 
-    watch: {
-      group () {
-        this.drawer = false
-      },
-    },
-  }
+const drawer = ref(false)
+const group = ref(null)
+const items = reactive([
+  {
+    title: 'Operativos',
+    value: 'Operativos',
+    to: "/Operativo",
+  },
+  {
+    title: 'Misiones',
+    value: 'Misiones',
+    to: "/Mision",
+  },
+  {
+    title: 'Equipos',
+    value: 'Equipos',
+    to: "/Equipo",
+  },
+])
+
+watch(group, () => {
+  drawer.value = false
+})
 </script>
