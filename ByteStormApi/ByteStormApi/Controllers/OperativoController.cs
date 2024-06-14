@@ -99,7 +99,7 @@ namespace ByteStormApi.Controllers;
         {
             for (int i = 0; i < operativoDTO.Misiones.Count; i++)
             {
-                var aux = _context.Misiones.Find(operativoDTO.Misiones[i]);
+                var aux = await _context.Misiones.FindAsync(operativoDTO.Misiones[i]);
                 if (aux != null)
                 operativo.Misiones.Add(aux);
             }
