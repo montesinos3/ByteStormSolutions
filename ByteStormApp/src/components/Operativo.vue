@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, reactive } from 'vue'
 
 let newNombre = ref('')
 let newRol = ref('')
@@ -46,8 +46,8 @@ async function removeOperativo(id) {
 
 async function editOperativo(operativo) {
   let aux = { id: operativo.id, 
-    nombre: (editedNombres[operativo.id]!='') ? editedNombres[operativo.id] : operativo.nombre, 
-    rol: (editedRoles[operativo.id]!='') ? editedRoles[operativo.id] : operativo.rol
+    nombre: (((editedNombres[operativo.id]!=undefined) && (editedNombres[operativo.id]!="")) ? editedNombres[operativo.id] : operativo.nombre), 
+    rol: (((editedRoles[operativo.id]!=undefined) && (editedRoles[operativo.id]!="")) ? editedRoles[operativo.id] : operativo.rol)
   }
   let json={
     method: 'PUT',
@@ -71,28 +71,34 @@ async function editOperativo(operativo) {
 </script>
 
 <template>
-  <v-form @submit.prevent="addOperativo">
-    <input class="mx-5 w-25 px-4 bg-grey-darken-1" v-model="newNombre" required placeholder="nuevo nombre para operativo">
-    <input class="mx-5 px-4 bg-grey-darken-1" v-model="newRol" required placeholder="nuevo rol para operativo">
-    <v-btn type="submit">Añadir Operativo</v-btn> 
-  </v-form>
+  <form @submit.prevent="addOperativo" class="ma-5">
+    <v-text-field v-model="newNombre" required placeholder="nuevo nombre para operativo" max-width="300"></v-text-field>
+    <v-text-field v-model="newRol" required placeholder="nuevo rol para operativo" max-width="300"></v-text-field>
+    <!-- <v-text-field v-model="newMision" placeholder="id de la mision del operativo" max-width="300"></v-text-field> -->
+    <v-btn type="submit" class="mb-5">Añadir Operativo</v-btn> 
+  </form>
     <ul> <!-- Probar a hacer una tabla -->
         <li>
+          <span class="mx-5">Id</span>
           <span class="mr-5">Nombre</span>
           <span class="mr-5">Rol</span>
+          <!-- <span class="mr-5">Mision</span> -->
         </li>
         <li v-for="operativo in operativos" :key="operativo.id">
-        <span class="mr-5">{{ operativo.nombre }}</span>
-        <span class="mr-5">{{ operativo.rol }}</span>
-        <v-btn @click="removeOperativo(operativo.id)" class="ml-5 bg-red">X</v-btn> 
-        <v-btn @click="showEdit[operativo.id] = !showEdit[operativo.id]" class="bg-green"> <!-- Hacer una nueva pag/componente para el edit -->
-          <img src="@/assets/lapiz.png" alt="edit">
-        </v-btn>
-        <v-form @submit.prevent="editOperativo(operativo)" v-show="showEdit[operativo.id]">
-          <input v-model="editedNombres[operativo.id]" placeholder="Edita el nombre del operativo">
-          <input v-model="editedRoles[operativo.id]" placeholder="Edita el rol del operativo">
-          <v-btn type="submit">Editar</v-btn> 
-        </v-form>
+          <span class="mx-5">{{ operativo.id }}</span>
+          <span class="mr-5">{{ operativo.nombre }}</span>
+          <span class="mr-5">{{ operativo.rol }}</span>
+          <!-- <span class="mr-5">{{ operativo.mision }}</span> -->
+          <v-btn @click="removeOperativo(operativo.id)" class="ml-5 bg-red">X</v-btn> 
+          <v-btn @click="showEdit[operativo.id] = !showEdit[operativo.id]" class="bg-green" append-icon="mdi-pencil"> <!-- Hacer una nueva pag/componente para el edit -->
+            <!-- <img src="@/assets/lapiz.png" alt="edit"> -->
+          </v-btn>
+          <v-form @submit.prevent="editOperativo(operativo)" v-show="showEdit[operativo.id]">
+            <input v-model="editedNombres[operativo.id]" placeholder="Edita el nombre del operativo">
+            <input v-model="editedRoles[operativo.id]" placeholder="Edita el rol del operativo">
+            <!-- <input v-model="editedMisiones[operativo.id]" placeholder="Edita la mision del operativo"> -->
+            <v-btn type="submit">Editar</v-btn> 
+          </v-form>
         </li>
     </ul>
 </template>
