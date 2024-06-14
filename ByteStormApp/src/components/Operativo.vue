@@ -4,7 +4,8 @@ import { ref, onMounted } from 'vue'
 let newNombre = ref('')
 let newRol = ref('')
 let newMision = ref('')
-let editedOperativos = []
+let editedNombres = []
+let editedRoles = []
 const showEdit = ref([])
 
 let operativos = ref([])
@@ -44,30 +45,27 @@ async function removeOperativo(id) {
 }
 
 async function editOperativo(operativo) {
-  // let aux = { id: operativo.id, 
-  //   name: (editOperativo[operativo.id].nombre!=null) ? editOperativo[operativo.id].nombre : operativo.nombre, 
-  //   rol: (editOperativo[operativo.id].rol!=null) ? editOperativo[operativo.id].rol : operativo.rol
-  // }
-  // let json={
-  //   method: 'PUT',
-  //   headers: {
-  //     'Content-Type': 'application/json;charset=utf-8'
-  //   },
-  //   body: JSON.stringify(aux)
-  // }
-  // let res = await fetch(`https://localhost:7208/api/Operativo/${operativo.id}`, json).catch(error=>alert(error))
+  let aux = { id: operativo.id, 
+    nombre: (editedNombres[operativo.id]!='') ? editedNombres[operativo.id] : operativo.nombre, 
+    rol: (editedRoles[operativo.id]!='') ? editedRoles[operativo.id] : operativo.rol
+  }
+  let json={
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json;charset=utf-8'
+    },
+    body: JSON.stringify(aux)
+  }
+  let res = await fetch(`https://localhost:7208/api/Operativo/${operativo.id}`, json).catch(error=>alert(error))
   
-  // if(res.status==204 || res.status==200){
-  //   //eliminar todo por id
-  //   // let index=todos.value.findIndex((t)=>t.id==todo.id)
-  //   // todos.value.splice(index,1)
-  //   //insertar el nuevo todo
-  //   // todos.push(data)
-  //   operativos.value.find((o)=>o.id==operativo.id) = editedOperativos[operativo.id]
-  // } else{
-  //   alert("Error al editar operativo")
-  // }
-  // editedOperativos[operativo.id]=''
+  if(res.status==204 || res.status==200){
+    operativos.value.find((o)=>o.id==operativo.id).nombre = aux.nombre
+    operativos.value.find((o)=>o.id==operativo.id).rol = aux.rol
+  } else{
+    alert("Error al editar operativo")
+  }
+  editedNombres[operativo.id]=''
+  editedRoles[operativo.id]=''
 }
 
 </script>
@@ -90,11 +88,11 @@ async function editOperativo(operativo) {
         <v-btn @click="showEdit[operativo.id] = !showEdit[operativo.id]" class="bg-green"> <!-- Hacer una nueva pag/componente para el edit -->
           <img src="@/assets/lapiz.png" alt="edit">
         </v-btn>
-        <!-- <v-form @submit.prevent="editOperativo(operativo)" v-show="showEdit[operativo.id]">
-          <input v-model="editedOperativos[operativo.id].nombre" placeholder="Edita el nombre del operativo">
-          <input v-model="editedOperativos[operativo.id].rol" placeholder="Edita el rol del operativo">
+        <v-form @submit.prevent="editOperativo(operativo)" v-show="showEdit[operativo.id]">
+          <input v-model="editedNombres[operativo.id]" placeholder="Edita el nombre del operativo">
+          <input v-model="editedRoles[operativo.id]" placeholder="Edita el rol del operativo">
           <v-btn type="submit">Editar</v-btn> 
-        </v-form> -->
+        </v-form>
         </li>
     </ul>
 </template>
