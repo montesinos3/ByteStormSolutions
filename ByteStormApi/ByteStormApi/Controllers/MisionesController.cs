@@ -21,6 +21,7 @@ public class MisionesController : ControllerBase
     public async Task<ActionResult<IEnumerable<MisionDTO>>> GetMisiones()
     {
         return await _context.Misiones
+            .Include(m => m.Equipos)
             .Select(X=>ItemToDTO(X))
             .ToListAsync();
     }
@@ -64,6 +65,10 @@ public class MisionesController : ControllerBase
 
         if (misionDTO.Equipos != null)
         {
+            if (mision.Equipos == null)
+            {
+                mision.Equipos = new List<Equipo>();
+            }
             for (int i = 0; i < misionDTO.Equipos.Count; i++)
             {
                 var aux = _context.Equipos.Find(misionDTO.Equipos[i]);
@@ -71,6 +76,7 @@ public class MisionesController : ControllerBase
                     mision.Equipos.Add(aux);
             }
         }
+        
 
         try
         {
@@ -100,12 +106,13 @@ public class MisionesController : ControllerBase
 
         if (misionDTO.Equipos != null)
         {
+            mision.Equipos = new List<Equipo>();
             for (int i = 0; i < misionDTO.Equipos.Count; i++)
             {
                 var aux = _context.Equipos.Find(misionDTO.Equipos[i]);
                 if (aux != null)
                     mision.Equipos.Add(aux);
-            }
+                }
         }
 
         _context.Misiones.Add(mision);
@@ -140,12 +147,27 @@ public class MisionesController : ControllerBase
         return _context.Misiones.Any(m => m.Id == id);
     }
 
-    private static MisionDTO ItemToDTO(Mision mision) =>
-       new MisionDTO
-       {
-           Id = mision.Id,
-           Descripcion = mision.Descripcion,
-           Estado = mision.Estado,
-           IdOperativo = mision.IdOperativo
-       };
+    private static MisionDTO ItemToDTO(Mision mision)
+    {
+        var misionDTO = new MisionDTO
+        {
+            Id = mision.Id,
+            Descripcion = mision.Descripcion,
+            Estado = mision.Estado,
+            IdOperativo = mision.IdOperativo
+        };
+        if (misionDTO.Equipos == null)
+        {
+            misionDTO.Equipos = new List<long>();
+        }
+        if (mision.Equipos != null)
+        {
+            for (int i = 0; i < mision.Equipos.Count; i++)
+            {
+                misionDTO.Equipos.Add(mision.Equipos[i].Id);
+            }
+        }
+        return misionDTO;
+
+    }
 }

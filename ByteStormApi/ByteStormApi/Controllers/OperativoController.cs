@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ByteStormApi.Models;
+using SQLitePCL;
 
 namespace ByteStormApi.Controllers;
 
@@ -20,6 +21,7 @@ namespace ByteStormApi.Controllers;
         public async Task<ActionResult<IEnumerable<OperativoDTO>>> GetOperativos()
         {
             return await _context.Operativos
+                .Include(o => o.Misiones)
                 .Select(x=>ItemToDTO(x))
                 .ToListAsync();
         }
@@ -44,7 +46,7 @@ namespace ByteStormApi.Controllers;
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         // <snippet_Update>
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOperativo(long id, Operativo operativoDTO)
+        public async Task<IActionResult> PutOperativo(long id, OperativoDTO operativoDTO)
         {
             if (id != operativoDTO.Id)
             {
@@ -60,17 +62,21 @@ namespace ByteStormApi.Controllers;
             operativo.Nombre = operativoDTO.Nombre;
             operativo.Rol = operativoDTO.Rol;
 
-            if (operativoDTO.Misiones != null)
+            if(operativoDTO.Misiones != null)
             {
+                if (operativo.Misiones == null)
+                {
+                    operativo.Misiones = new List<Mision>();
+                }
                 for (int i = 0; i < operativoDTO.Misiones.Count; i++)
                 {
-                    var aux = _context.Misiones.Find(operativoDTO.Misiones[i]);
+                    var aux = await _context.Misiones.FindAsync(operativoDTO.Misiones[i]);
                     if (aux != null)
                         operativo.Misiones.Add(aux);
                 }
             }
 
-        try
+            try
             {
                 await _context.SaveChangesAsync();
             }
@@ -94,17 +100,17 @@ namespace ByteStormApi.Controllers;
                 Rol = operativoDTO.Rol,
                 Nombre = operativoDTO.Nombre,
             };
-
-        if (operativoDTO.Misiones != null)
-        {
-            for (int i = 0; i < operativoDTO.Misiones.Count; i++)
+            if (operativoDTO.Misiones != null)
             {
-                var aux = await _context.Misiones.FindAsync(operativoDTO.Misiones[i]);
-                if (aux != null)
-                operativo.Misiones.Add(aux);
+                operativo.Misiones = new List<Mision>();
+                for (int i = 0; i < operativoDTO.Misiones.Count; i++)
+                {
+                    var aux = await _context.Misiones.FindAsync(operativoDTO.Misiones[i]);
+                    if (aux != null)
+                        operativo.Misiones.Add(aux);
+                }
+                
             }
-        }
-
             _context.Operativos.Add(operativo);
             await _context.SaveChangesAsync();
 
@@ -136,12 +142,25 @@ namespace ByteStormApi.Controllers;
         {
             return _context.Operativos.Any(o => o.Id == id);
         }
-
-        private static OperativoDTO ItemToDTO(Operativo operativo) =>
-        new OperativoDTO
+    private static OperativoDTO ItemToDTO(Operativo operativo) {
+        var operativoDTO = new OperativoDTO
         {
             Id = operativo.Id,
             Nombre = operativo.Nombre,
             Rol = operativo.Rol
         };
+        if (operativoDTO.Misiones == null)
+        {
+            operativoDTO.Misiones = new List<long>();
+        }
+
+        if (operativo.Misiones != null)
+        {
+            for (int i = 0; i < operativo.Misiones.Count; i++)
+            {
+                operativoDTO.Misiones.Add(operativo.Misiones[i].Id);
+            }
+        }
+            return operativoDTO;
+    }
 }
