@@ -3,10 +3,10 @@ import { ref, onMounted, reactive } from 'vue'
 
 let newNombre = ref('')
 let newRol = ref('')
-let newMisiones = ref([])
+let newMisiones = ref('')
 let editedNombres = []
 let editedRoles = []
-let editedMisiones = [[]]
+let editedMisiones = ['']
 const showEdit = ref([])
 
 let operativos = ref([])
@@ -17,7 +17,7 @@ onMounted(async () => {
 })
 
 async function addOperativo() {
-  let aux = { nombre: newNombre.value, rol: newRol.value, misiones: newMisiones.value}
+  let aux = { nombre: newNombre.value, rol: newRol.value, misiones: newMisiones.value.split(',')}
   let json={
     method: 'POST',
     headers: {
@@ -31,7 +31,7 @@ async function addOperativo() {
   operativos.value.push(data)
   newNombre.value=''
   newRol.value=''
-  newMisiones.value=[]
+  newMisiones.value=''
 }
 
 async function removeOperativo(id) {
@@ -50,7 +50,7 @@ async function editOperativo(operativo) {
   let aux = { id: operativo.id, 
     nombre: (((editedNombres[operativo.id]!=undefined) && (editedNombres[operativo.id]!="")) ? editedNombres[operativo.id] : operativo.nombre), 
     rol: (((editedRoles[operativo.id]!=undefined) && (editedRoles[operativo.id]!="")) ? editedRoles[operativo.id] : operativo.rol),
-    misiones: (((editedMisiones[operativo.id]!=undefined) && (editedMisiones[operativo.id]!=[])) ? editedMisiones[operativo.id] : operativo.misiones)
+    misiones: (((editedMisiones[operativo.id]!=undefined) && (editedMisiones[operativo.id]!="")) ? editedMisiones[operativo.id].split(',') : operativo.misiones)
   }
   let json={
     method: 'PUT',
@@ -70,7 +70,7 @@ async function editOperativo(operativo) {
   }
   editedNombres[operativo.id]=''
   editedRoles[operativo.id]=''
-  editedMisiones[operativo.id]=[]
+  editedMisiones[operativo.id]=''
 }
 
 </script>

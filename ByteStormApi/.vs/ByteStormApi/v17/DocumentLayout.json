@@ -1,49 +1,49 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\",
+  "WorkspaceRootPath": "C:\\Users\\Jorge\\OneDrive\\Escritorio\\Universidad\\Practicas\\ByteStormSolutions\\ByteStormApi\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|c:\\users\\jormo\\desktop\\jorge\\practicas\\bytestormsolutions\\bytestormapi\\bytestormapi\\controllers\\operativocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|c:\\users\\jorge\\onedrive\\escritorio\\universidad\\practicas\\bytestormsolutions\\bytestormapi\\bytestormapi\\controllers\\operativocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|solutionrelative:bytestormapi\\controllers\\operativocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|c:\\users\\jormo\\desktop\\jorge\\practicas\\bytestormsolutions\\bytestormapi\\bytestormapi\\controllers\\misionescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|c:\\users\\jorge\\onedrive\\escritorio\\universidad\\practicas\\bytestormsolutions\\bytestormapi\\bytestormapi\\controllers\\misionescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|solutionrelative:bytestormapi\\controllers\\misionescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|c:\\users\\jormo\\desktop\\jorge\\practicas\\bytestormsolutions\\bytestormapi\\bytestormapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|c:\\users\\jorge\\onedrive\\escritorio\\universidad\\practicas\\bytestormsolutions\\bytestormapi\\bytestormapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|solutionrelative:bytestormapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|c:\\users\\jormo\\desktop\\jorge\\practicas\\bytestormsolutions\\bytestormapi\\bytestormapi\\models\\bytestormcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|c:\\users\\jorge\\onedrive\\escritorio\\universidad\\practicas\\bytestormsolutions\\bytestormapi\\bytestormapi\\models\\bytestormcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|solutionrelative:bytestormapi\\models\\bytestormcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|c:\\users\\jormo\\desktop\\jorge\\practicas\\bytestormsolutions\\bytestormapi\\bytestormapi\\models\\operativo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|c:\\users\\jorge\\onedrive\\escritorio\\universidad\\practicas\\bytestormsolutions\\bytestormapi\\bytestormapi\\models\\operativo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|solutionrelative:bytestormapi\\models\\operativo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|c:\\users\\jormo\\desktop\\jorge\\practicas\\bytestormsolutions\\bytestormapi\\bytestormapi\\models\\operativodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|c:\\users\\jorge\\onedrive\\escritorio\\universidad\\practicas\\bytestormsolutions\\bytestormapi\\bytestormapi\\models\\operativodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|solutionrelative:bytestormapi\\models\\operativodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|c:\\users\\jormo\\desktop\\jorge\\practicas\\bytestormsolutions\\bytestormapi\\bytestormapi\\models\\mision.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|c:\\users\\jorge\\onedrive\\escritorio\\universidad\\practicas\\bytestormsolutions\\bytestormapi\\bytestormapi\\models\\mision.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|solutionrelative:bytestormapi\\models\\mision.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|c:\\users\\jormo\\desktop\\jorge\\practicas\\bytestormsolutions\\bytestormapi\\bytestormapi\\models\\misiondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|c:\\users\\jorge\\onedrive\\escritorio\\universidad\\practicas\\bytestormsolutions\\bytestormapi\\bytestormapi\\models\\misiondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|solutionrelative:bytestormapi\\models\\misiondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|c:\\users\\jormo\\desktop\\jorge\\practicas\\bytestormsolutions\\bytestormapi\\bytestormapi\\controllers\\equiposcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|c:\\users\\jorge\\onedrive\\escritorio\\universidad\\practicas\\bytestormsolutions\\bytestormapi\\bytestormapi\\controllers\\equiposcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|solutionrelative:bytestormapi\\controllers\\equiposcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|c:\\users\\jormo\\desktop\\jorge\\practicas\\bytestormsolutions\\bytestormapi\\bytestormapi\\models\\equipodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|c:\\users\\jorge\\onedrive\\escritorio\\universidad\\practicas\\bytestormsolutions\\bytestormapi\\bytestormapi\\models\\equipodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|solutionrelative:bytestormapi\\models\\equipodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|c:\\users\\jormo\\desktop\\jorge\\practicas\\bytestormsolutions\\bytestormapi\\bytestormapi\\models\\equipo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|c:\\users\\jorge\\onedrive\\escritorio\\universidad\\practicas\\bytestormsolutions\\bytestormapi\\bytestormapi\\models\\equipo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8B9918E3-D7A2-42A4-A2D4-9830E58E588D}|ByteStormApi\\ByteStormApi.csproj|solutionrelative:bytestormapi\\models\\equipo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -60,9 +60,9 @@
               "$type": "Document",
               "DocumentIndex": 3,
               "Title": "ByteStormContext.cs",
-              "DocumentMoniker": "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Models\\ByteStormContext.cs",
+              "DocumentMoniker": "C:\\Users\\Jorge\\OneDrive\\Escritorio\\Universidad\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Models\\ByteStormContext.cs",
               "RelativeDocumentMoniker": "ByteStormApi\\Models\\ByteStormContext.cs",
-              "ToolTip": "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Models\\ByteStormContext.cs",
+              "ToolTip": "C:\\Users\\Jorge\\OneDrive\\Escritorio\\Universidad\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Models\\ByteStormContext.cs",
               "RelativeToolTip": "ByteStormApi\\Models\\ByteStormContext.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAABYAAAAIAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -72,9 +72,9 @@
               "$type": "Document",
               "DocumentIndex": 2,
               "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Program.cs",
+              "DocumentMoniker": "C:\\Users\\Jorge\\OneDrive\\Escritorio\\Universidad\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Program.cs",
               "RelativeDocumentMoniker": "ByteStormApi\\Program.cs",
-              "ToolTip": "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Program.cs",
+              "ToolTip": "C:\\Users\\Jorge\\OneDrive\\Escritorio\\Universidad\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Program.cs",
               "RelativeToolTip": "ByteStormApi\\Program.cs",
               "ViewState": "AQIAAAMAAAAAAAAAAAAAACkAAAAkAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -84,9 +84,9 @@
               "$type": "Document",
               "DocumentIndex": 9,
               "Title": "EquipoDTO.cs",
-              "DocumentMoniker": "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Models\\EquipoDTO.cs",
+              "DocumentMoniker": "C:\\Users\\Jorge\\OneDrive\\Escritorio\\Universidad\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Models\\EquipoDTO.cs",
               "RelativeDocumentMoniker": "ByteStormApi\\Models\\EquipoDTO.cs",
-              "ToolTip": "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Models\\EquipoDTO.cs",
+              "ToolTip": "C:\\Users\\Jorge\\OneDrive\\Escritorio\\Universidad\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Models\\EquipoDTO.cs",
               "RelativeToolTip": "ByteStormApi\\Models\\EquipoDTO.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAATAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -96,9 +96,9 @@
               "$type": "Document",
               "DocumentIndex": 5,
               "Title": "OperativoDTO.cs",
-              "DocumentMoniker": "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Models\\OperativoDTO.cs",
+              "DocumentMoniker": "C:\\Users\\Jorge\\OneDrive\\Escritorio\\Universidad\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Models\\OperativoDTO.cs",
               "RelativeDocumentMoniker": "ByteStormApi\\Models\\OperativoDTO.cs",
-              "ToolTip": "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Models\\OperativoDTO.cs",
+              "ToolTip": "C:\\Users\\Jorge\\OneDrive\\Escritorio\\Universidad\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Models\\OperativoDTO.cs",
               "RelativeToolTip": "ByteStormApi\\Models\\OperativoDTO.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAANAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -108,9 +108,9 @@
               "$type": "Document",
               "DocumentIndex": 4,
               "Title": "Operativo.cs",
-              "DocumentMoniker": "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Models\\Operativo.cs",
+              "DocumentMoniker": "C:\\Users\\Jorge\\OneDrive\\Escritorio\\Universidad\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Models\\Operativo.cs",
               "RelativeDocumentMoniker": "ByteStormApi\\Models\\Operativo.cs",
-              "ToolTip": "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Models\\Operativo.cs",
+              "ToolTip": "C:\\Users\\Jorge\\OneDrive\\Escritorio\\Universidad\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Models\\Operativo.cs",
               "RelativeToolTip": "ByteStormApi\\Models\\Operativo.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -120,9 +120,9 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "OperativoController.cs",
-              "DocumentMoniker": "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Controllers\\OperativoController.cs",
+              "DocumentMoniker": "C:\\Users\\Jorge\\OneDrive\\Escritorio\\Universidad\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Controllers\\OperativoController.cs",
               "RelativeDocumentMoniker": "ByteStormApi\\Controllers\\OperativoController.cs",
-              "ToolTip": "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Controllers\\OperativoController.cs",
+              "ToolTip": "C:\\Users\\Jorge\\OneDrive\\Escritorio\\Universidad\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Controllers\\OperativoController.cs",
               "RelativeToolTip": "ByteStormApi\\Controllers\\OperativoController.cs",
               "ViewState": "AQIAAAcAAAAAAAAAAAAYwBMAAAACAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -133,9 +133,9 @@
               "$type": "Document",
               "DocumentIndex": 8,
               "Title": "EquiposController.cs",
-              "DocumentMoniker": "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Controllers\\EquiposController.cs",
+              "DocumentMoniker": "C:\\Users\\Jorge\\OneDrive\\Escritorio\\Universidad\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Controllers\\EquiposController.cs",
               "RelativeDocumentMoniker": "ByteStormApi\\Controllers\\EquiposController.cs",
-              "ToolTip": "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Controllers\\EquiposController.cs",
+              "ToolTip": "C:\\Users\\Jorge\\OneDrive\\Escritorio\\Universidad\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Controllers\\EquiposController.cs",
               "RelativeToolTip": "ByteStormApi\\Controllers\\EquiposController.cs",
               "ViewState": "AQIAAHIAAAAAAAAAAAAwwGwAAAAFAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -145,22 +145,21 @@
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "MisionesController.cs",
-              "DocumentMoniker": "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Controllers\\MisionesController.cs",
+              "DocumentMoniker": "C:\\Users\\Jorge\\OneDrive\\Escritorio\\Universidad\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Controllers\\MisionesController.cs",
               "RelativeDocumentMoniker": "ByteStormApi\\Controllers\\MisionesController.cs",
-              "ToolTip": "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Controllers\\MisionesController.cs",
+              "ToolTip": "C:\\Users\\Jorge\\OneDrive\\Escritorio\\Universidad\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Controllers\\MisionesController.cs",
               "RelativeToolTip": "ByteStormApi\\Controllers\\MisionesController.cs",
               "ViewState": "AQIAAAoAAAAAAAAAAAAkwBoAAAAFAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-13T09:42:27.546Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-06-13T09:42:27.546Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 7,
               "Title": "MisionDTO.cs",
-              "DocumentMoniker": "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Models\\MisionDTO.cs",
+              "DocumentMoniker": "C:\\Users\\Jorge\\OneDrive\\Escritorio\\Universidad\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Models\\MisionDTO.cs",
               "RelativeDocumentMoniker": "ByteStormApi\\Models\\MisionDTO.cs",
-              "ToolTip": "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Models\\MisionDTO.cs",
+              "ToolTip": "C:\\Users\\Jorge\\OneDrive\\Escritorio\\Universidad\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Models\\MisionDTO.cs",
               "RelativeToolTip": "ByteStormApi\\Models\\MisionDTO.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAIAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -170,9 +169,9 @@
               "$type": "Document",
               "DocumentIndex": 6,
               "Title": "Mision.cs",
-              "DocumentMoniker": "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Models\\Mision.cs",
+              "DocumentMoniker": "C:\\Users\\Jorge\\OneDrive\\Escritorio\\Universidad\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Models\\Mision.cs",
               "RelativeDocumentMoniker": "ByteStormApi\\Models\\Mision.cs",
-              "ToolTip": "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Models\\Mision.cs",
+              "ToolTip": "C:\\Users\\Jorge\\OneDrive\\Escritorio\\Universidad\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Models\\Mision.cs",
               "RelativeToolTip": "ByteStormApi\\Models\\Mision.cs",
               "ViewState": "AQIAAAMAAAAAAAAAAAAAAAsAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -182,9 +181,9 @@
               "$type": "Document",
               "DocumentIndex": 10,
               "Title": "Equipo.cs",
-              "DocumentMoniker": "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Models\\Equipo.cs",
+              "DocumentMoniker": "C:\\Users\\Jorge\\OneDrive\\Escritorio\\Universidad\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Models\\Equipo.cs",
               "RelativeDocumentMoniker": "ByteStormApi\\Models\\Equipo.cs",
-              "ToolTip": "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Models\\Equipo.cs",
+              "ToolTip": "C:\\Users\\Jorge\\OneDrive\\Escritorio\\Universidad\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\Models\\Equipo.cs",
               "RelativeToolTip": "ByteStormApi\\Models\\Equipo.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAATAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
