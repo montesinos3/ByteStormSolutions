@@ -17,7 +17,7 @@ onMounted(async () => {
 })
 
 async function addMision() {
-  let eq = (newEquipos.value!="") ? newEquipos.value.replaceAll(" ","").split(',') : []
+  let eq = (newEquipos.value) ? newEquipos.value.replaceAll(" ","").split(',') : []
   let aux = { descripcion: newDescripcion.value, estado: parseInt(newEstado.value,10), equipos: eq}
   let json={
     method: 'POST',
@@ -28,8 +28,12 @@ async function addMision() {
   }
 
   let response = await fetch("https://localhost:7208/api/Misiones", json).catch(error=>alert(error))
-  let data = await response.json()
-  misiones.value.push(data)
+  if(response.status == 201 || response.status==200){
+    let data = await response.json()
+    misiones.value.push(data)
+  } else{
+    alert("Error al crear mision")
+  }
   newDescripcion.value=''
   newEstado.value=''
   newEquipos.value=''
@@ -50,10 +54,11 @@ async function removeMision(id) {
 async function editMision(mision) {
   console.log(mision.descripcion)
   console.log(editedDescripciones[mision.id])
+  console.log(JSON.parse(`[${editedEquipos[mision.id].replaceAll(" ","")}]`) )
   let aux = { id: mision.id, 
     descripcion: (editedDescripciones[mision.id] ? editedDescripciones[mision.id] : mision.descripcion), 
     estado: (editedEstados[mision.id] ? parseInt(editedEstados[mision.id],10) : parseInt(mision.estado,10)),
-    equipos: (editedEquipos[mision.id] ? editedEquipos[mision.id].replaceAll(" ","").split(',') : mision.equipos)
+    equipos: (editedEquipos[mision.id] ? JSON.parse(`[${editedEquipos[mision.id].replaceAll(" ","")}]`) : mision.equipos)
   }
   console.log(mision.descripcion)
   let json={
@@ -98,7 +103,7 @@ async function editMision(mision) {
           <span class="mx-5">{{ mision.id }}</span>
           <span class="mr-5">{{ mision.descripcion }}</span>
           <span class="mr-5">{{ mision.estado }}</span>
-          <span class="mr-5">{{ (mision.equipos) ? mision.equipos : []}}</span>
+          <span class="mr-5">{{ mision.equipos.toString() }}</span>
           <span class="mr-5">{{ mision.idOperativo }}</span>
           <v-btn @click="removeMision(mision.id)" class="ml-5 bg-red">X</v-btn> 
           <v-btn @click="showEdit[mision.id] = !showEdit[mision.id]" class="bg-green" append-icon="mdi-pencil"> <!-- Hacer una nueva pag/componente para el edit -->

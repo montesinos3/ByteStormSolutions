@@ -63,7 +63,14 @@ public class MisionesController : ControllerBase
             mision.Descripcion = misionDTO.Descripcion;
         }
         if (misionDTO.Estado != null){
-            mision.Estado = misionDTO.Estado;
+            if (misionDTO.Estado == EstadoM.Planificada || misionDTO.Estado == EstadoM.Activa || misionDTO.Estado == EstadoM.Completada)
+            {
+                mision.Estado = misionDTO.Estado;
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
         if (misionDTO.IdOperativo != null){
             mision.IdOperativo = misionDTO.IdOperativo;
@@ -71,18 +78,18 @@ public class MisionesController : ControllerBase
 
         if (misionDTO.Equipos != null)
         {
-            if (mision.Equipos == null)
-            {
-                mision.Equipos = new List<Equipo>();
-            }
             for (int i = 0; i < misionDTO.Equipos.Count; i++)
             {
                 var aux = _context.Equipos.Find(misionDTO.Equipos[i]);
-                if (aux != null)
+                if (aux != null){
                     mision.Equipos.Add(aux);
+                }
+                else
+                {
+                    return BadRequest();
+                }
             }
         }
-        
 
         try
         {
@@ -106,19 +113,31 @@ public class MisionesController : ControllerBase
         var mision = new Mision
         {
             Descripcion = misionDTO.Descripcion,
-            Estado = misionDTO.Estado,
             IdOperativo = misionDTO.IdOperativo
         };
+        if (misionDTO.Estado != null)
+        {
+            if (misionDTO.Estado != EstadoM.Planificada && misionDTO.Estado != EstadoM.Activa && misionDTO.Estado != EstadoM.Completada)
+            {
+                return BadRequest();
+            }
+        }
+        mision.Estado = misionDTO.Estado;
 
+        mision.Equipos = new List<Equipo>();
         if (misionDTO.Equipos != null)
         {
-            mision.Equipos = new List<Equipo>();
             for (int i = 0; i < misionDTO.Equipos.Count; i++)
             {
                 var aux = _context.Equipos.Find(misionDTO.Equipos[i]);
-                if (aux != null)
+                if (aux != null){
                     mision.Equipos.Add(aux);
                 }
+                else
+                {
+                    return BadRequest();
+                }
+            }
         }
 
         _context.Misiones.Add(mision);

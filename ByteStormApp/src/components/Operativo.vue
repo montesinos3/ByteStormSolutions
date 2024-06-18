@@ -17,7 +17,7 @@ onMounted(async () => {
 })
 
 async function addOperativo() {
-  let mis = (newMisiones.value!="") ? newMisiones.value.replaceAll(" ","").split(',') : []
+  let mis = (newMisiones.value) ? newMisiones.value.replaceAll(" ","").split(',') : []
   let aux = { nombre: newNombre.value, rol: newRol.value, misiones: mis}
   let json={
     method: 'POST',
@@ -28,8 +28,12 @@ async function addOperativo() {
   }
 
   let response = await fetch("https://localhost:7208/api/Operativo", json).catch(error=>alert(error))
-  let data = await response.json()
-  operativos.value.push(data)
+  if(response.status == 204 || response.status==200){
+    let data = await response.json()
+    operativos.value.push(data)
+  } else{
+    alert("Error al crear operativo")
+  }
   newNombre.value=''
   newRol.value=''
   newMisiones.value=''
@@ -39,7 +43,7 @@ async function removeOperativo(id) {
   const res = await fetch(`https://localhost:7208/api/Operativo/${id}`, {
     method: 'DELETE',
   })
-  if(res.status==204 || res.status==200){
+  if(res.status==201 || res.status==200){
     //eliminar todo por id
     operativos.value = operativos.value.filter(o=>o.id != id)
   } else{

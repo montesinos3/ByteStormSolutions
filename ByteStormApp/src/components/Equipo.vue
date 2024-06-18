@@ -27,8 +27,12 @@ async function addEquipo() {
   }
 
   let response = await fetch("https://localhost:7208/api/Equipos", json).catch(error=>alert(error))
-  let data = await response.json()
-  equipos.value.push(data)
+  if(response.status == 201 || response.status==200){
+    let data = await response.json()
+    equipos.value.push(data)
+  } else{
+    alert("Error al crear equipo")
+  }
   newDescripcion.value=''
   newEstado.value=''
   newTipo.value=''
