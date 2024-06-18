@@ -66,16 +66,19 @@ public class OperativoController : ControllerBase
 
         if(operativoDTO.Misiones != null)
         {
-            for (int i = 0; i < operativoDTO.Misiones.Count; i++)
+            if(operativoDTO.Misiones.Count > 0)
             {
-                var aux = await _context.Misiones.FindAsync(operativoDTO.Misiones[i]);
-                if (aux != null)
+                for (int i = 0; i < operativoDTO.Misiones.Count; i++)
                 {
-                    operativo.Misiones.Add(aux);
-                }
-                else
-                {
-                    return BadRequest();
+                    var aux = await _context.Misiones.FindAsync(operativoDTO.Misiones[i]);
+                    if (aux != null)
+                    {
+                        operativo.Misiones.Add(aux);
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
                 }
             }
         }
@@ -107,19 +110,21 @@ public class OperativoController : ControllerBase
         operativo.Misiones = new List<Mision>();
         if (operativoDTO.Misiones != null)
         {
-            for (int i = 0; i < operativoDTO.Misiones.Count; i++)
+            if (operativoDTO.Misiones.Count > 0)
             {
-                var aux = await _context.Misiones.FindAsync(operativoDTO.Misiones[i]);
-                if (aux != null)
+                for (int i = 0; i < operativoDTO.Misiones.Count; i++)
                 {
-                    operativo.Misiones.Add(aux);
-                }
-                else
-                {
-                    return BadRequest();
+                    var aux = await _context.Misiones.FindAsync(operativoDTO.Misiones[i]);
+                    if (aux != null)
+                    {
+                        operativo.Misiones.Add(aux);
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
                 }
             }
-                
         }
         _context.Operativos.Add(operativo);
         await _context.SaveChangesAsync();

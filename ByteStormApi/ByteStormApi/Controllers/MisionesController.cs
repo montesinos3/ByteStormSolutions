@@ -78,15 +78,19 @@ public class MisionesController : ControllerBase
 
         if (misionDTO.Equipos != null)
         {
-            for (int i = 0; i < misionDTO.Equipos.Count; i++)
+            if (misionDTO.Equipos.Count > 0)
             {
-                var aux = _context.Equipos.Find(misionDTO.Equipos[i]);
-                if (aux != null){
-                    mision.Equipos.Add(aux);
-                }
-                else
+                for (int i = 0; i < misionDTO.Equipos.Count; i++)
                 {
-                    return BadRequest();
+                    var aux = _context.Equipos.Find(misionDTO.Equipos[i]);
+                    if (aux != null)
+                    {
+                        mision.Equipos.Add(aux);
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
                 }
             }
         }
@@ -125,17 +129,21 @@ public class MisionesController : ControllerBase
         mision.Estado = misionDTO.Estado;
 
         mision.Equipos = new List<Equipo>();
-        if (misionDTO.Equipos != null)
+        if(misionDTO.Equipos != null)
         {
-            for (int i = 0; i < misionDTO.Equipos.Count; i++)
+            if (misionDTO.Equipos.Count > 0)
             {
-                var aux = _context.Equipos.Find(misionDTO.Equipos[i]);
-                if (aux != null){
-                    mision.Equipos.Add(aux);
-                }
-                else
+                for (int i = 0; i < misionDTO.Equipos.Count; i++)
                 {
-                    return BadRequest();
+                    var aux = _context.Equipos.Find(misionDTO.Equipos[i]);
+                    if (aux != null)
+                    {
+                        mision.Equipos.Add(aux);
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
                 }
             }
         }

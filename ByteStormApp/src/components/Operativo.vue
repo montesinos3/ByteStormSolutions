@@ -17,7 +17,7 @@ onMounted(async () => {
 })
 
 async function addOperativo() {
-  let mis = (newMisiones.value) ? newMisiones.value.replaceAll(" ","").split(',') : []
+  let mis = (newMisiones.value) ? JSON.parse(`[${newMisiones.value.replaceAll(" ","")}]`) : []
   let aux = { nombre: newNombre.value, rol: newRol.value, misiones: mis}
   let json={
     method: 'POST',
@@ -28,7 +28,7 @@ async function addOperativo() {
   }
 
   let response = await fetch("https://localhost:7208/api/Operativo", json).catch(error=>alert(error))
-  if(response.status == 204 || response.status==200){
+  if(response.status == 201 || response.status==200){
     let data = await response.json()
     operativos.value.push(data)
   } else{
@@ -43,7 +43,7 @@ async function removeOperativo(id) {
   const res = await fetch(`https://localhost:7208/api/Operativo/${id}`, {
     method: 'DELETE',
   })
-  if(res.status==201 || res.status==200){
+  if(res.status==204 || res.status==200){
     //eliminar todo por id
     operativos.value = operativos.value.filter(o=>o.id != id)
   } else{
@@ -55,7 +55,7 @@ async function editOperativo(operativo) {
   let aux = { id: operativo.id, 
     nombre: (editedNombres[operativo.id] ? editedNombres[operativo.id] : operativo.nombre), 
     rol: (editedRoles[operativo.id] ? editedRoles[operativo.id] : operativo.rol),
-    misiones: (editedMisiones[operativo.id] ? editedMisiones[operativo.id].replaceAll(" ","").split(',') : operativo.misiones)
+    misiones: (editedMisiones[operativo.id] ? JSON.parse(`[${editedMisiones[operativo.id].replaceAll(" ","")}]`) : operativo.misiones)
   }
   let json={
     method: 'PUT',
@@ -98,7 +98,7 @@ async function editOperativo(operativo) {
           <span class="mx-5">{{ operativo.id }}</span>
           <span class="mr-5">{{ operativo.nombre }}</span>
           <span class="mr-5">{{ operativo.rol }}</span>
-          <span class="mr-5">{{ operativo.misiones }}</span>
+          <span class="mr-5">{{ operativo.misiones.toString() }}</span>
           <v-btn @click="removeOperativo(operativo.id)" class="ml-5 bg-red">X</v-btn> 
           <v-btn @click="showEdit[operativo.id] = !showEdit[operativo.id]" class="bg-green" append-icon="mdi-pencil"> <!-- Hacer una nueva pag/componente para el edit -->
             <!-- <img src="@/assets/lapiz.png" alt="edit"> -->

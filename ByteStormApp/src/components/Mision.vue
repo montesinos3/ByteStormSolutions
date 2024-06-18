@@ -17,7 +17,7 @@ onMounted(async () => {
 })
 
 async function addMision() {
-  let eq = (newEquipos.value) ? newEquipos.value.replaceAll(" ","").split(',') : []
+  let eq = (newEquipos.value) ? JSON.parse(`[${newEquipos.value.replaceAll(" ","")}]`) : []
   let aux = { descripcion: newDescripcion.value, estado: parseInt(newEstado.value,10), equipos: eq}
   let json={
     method: 'POST',
@@ -54,7 +54,6 @@ async function removeMision(id) {
 async function editMision(mision) {
   console.log(mision.descripcion)
   console.log(editedDescripciones[mision.id])
-  console.log(JSON.parse(`[${editedEquipos[mision.id].replaceAll(" ","")}]`) )
   let aux = { id: mision.id, 
     descripcion: (editedDescripciones[mision.id] ? editedDescripciones[mision.id] : mision.descripcion), 
     estado: (editedEstados[mision.id] ? parseInt(editedEstados[mision.id],10) : parseInt(mision.estado,10)),
