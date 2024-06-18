@@ -78,9 +78,9 @@ async function editOperativo(operativo) {
 
 <template>
   <form @submit.prevent="addOperativo" class="ma-5">
-    <v-text-field v-model="newNombre" required placeholder="nuevo nombre para operativo" max-width="300"></v-text-field>
-    <v-text-field v-model="newRol" required placeholder="nuevo rol para operativo" max-width="300"></v-text-field>
-    <v-text-field v-model="newMisiones" placeholder="ids de las misiones del operativo" max-width="300"></v-text-field>
+    <v-text-field v-model="newNombre" required placeholder="nuevo nombre para operativo" max-width="400"></v-text-field>
+    <v-text-field v-model="newRol" required placeholder="nuevo rol para operativo" max-width="400"></v-text-field>
+    <v-text-field v-model="newMisiones" placeholder="ids de las misiones del operativo" max-width="400"></v-text-field>
     <v-btn type="submit" class="mb-5">Añadir Operativo</v-btn> 
   </form>
     <ul> <!-- Probar a hacer una tabla -->

@@ -77,9 +77,9 @@ async function editEquipo(equipo) {
 
 <template>
   <form @submit.prevent="addEquipo" class="ma-5">
-    <v-text-field v-model="newDescripcion" required placeholder="nueva descripcion para equipo" max-width="300"></v-text-field>
-    <v-text-field v-model="newEstado" required placeholder="nuevo estado para equipo (0,1)" max-width="300"></v-text-field>
-    <v-text-field v-model="newTipo" required placeholder="nuevo tipo para equipo (0,1)" max-width="300"></v-text-field>
+    <v-text-field v-model="newDescripcion" required placeholder="nueva descripcion para equipo" max-width="400"></v-text-field>
+    <v-text-field v-model="newEstado" required placeholder="estado [Disponible(0), En uso(1)]" max-width="400"></v-text-field>
+    <v-text-field v-model="newTipo" required placeholder="tipo [Software(0), Hardware(1)]" max-width="400"></v-text-field>
     <v-btn type="submit" class="mb-5">Añadir Equipo</v-btn> 
   </form>
     <ul> <!-- Probar a hacer una tabla -->

@@ -78,9 +78,9 @@ async function editMision(mision) {
 
 <template>
   <form @submit.prevent="addMision" class="ma-5">
-    <v-text-field v-model="newDescripcion" required placeholder="nuevo descripcion para mision" max-width="300"></v-text-field>
-    <v-text-field v-model="newEstado" required placeholder="nuevo estado para mision (0, 1, 2)" max-width="300"></v-text-field>
-    <v-text-field v-model="newEquipos" placeholder="ids de las equipos de la mision" max-width="300"></v-text-field>
+    <v-text-field v-model="newDescripcion" required placeholder="nuevo descripcion para mision" max-width="400"></v-text-field>
+    <v-text-field v-model="newEstado" required placeholder="estado [Planificada(0), Activa(1), Completada(2)]" max-width="400"></v-text-field>
+    <v-text-field v-model="newEquipos" placeholder="ids de las equipos de la mision" max-width="400"></v-text-field>
     <v-btn type="submit" class="mb-5">Añadir Mision</v-btn> 
   </form>
     <ul> <!-- Probar a hacer una tabla -->
