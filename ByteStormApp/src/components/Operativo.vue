@@ -49,9 +49,9 @@ async function removeOperativo(id) {
 
 async function editOperativo(operativo) {
   let aux = { id: operativo.id, 
-    nombre: (((editedNombres[operativo.id]!=undefined) && (editedNombres[operativo.id]!="")) ? editedNombres[operativo.id] : operativo.nombre), 
-    rol: (((editedRoles[operativo.id]!=undefined) && (editedRoles[operativo.id]!="")) ? editedRoles[operativo.id] : operativo.rol),
-    misiones: (((editedMisiones[operativo.id]!=undefined) && (editedMisiones[operativo.id]!="")) ? editedMisiones[operativo.id].replaceAll(" ","").split(',') : operativo.misiones)
+    nombre: (editedNombres[operativo.id] ? editedNombres[operativo.id] : operativo.nombre), 
+    rol: (editedRoles[operativo.id] ? editedRoles[operativo.id] : operativo.rol),
+    misiones: (editedMisiones[operativo.id] ? editedMisiones[operativo.id].replaceAll(" ","").split(',') : operativo.misiones)
   }
   let json={
     method: 'PUT',

@@ -59,8 +59,10 @@ namespace ByteStormApi.Controllers;
                 return NotFound();
             }
 
-            operativo.Nombre = operativoDTO.Nombre;
-            operativo.Rol = operativoDTO.Rol;
+            if(operativoDTO.Nombre != null) 
+                operativo.Nombre = operativoDTO.Nombre;
+            if (operativoDTO.Rol != null)
+                operativo.Rol = operativoDTO.Rol;
 
             if(operativoDTO.Misiones != null)
             {

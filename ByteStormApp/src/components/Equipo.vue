@@ -48,9 +48,9 @@ async function removeEquipo(id) {
 
 async function editEquipo(equipo) {
   let aux = { id: equipo.id, 
-    descripcion: (((editedDescripciones[equipo.id]!=undefined) && (editedDescripciones[equipo.id]!="")) ? editedDescripciones[equipo.id] : equipo.descripcion), 
-    tipo: (((editedTipos[equipo.id]!=undefined) && (editedTipos[equipo.id]!="")) ? parseInt(editedTipos[equipo.id],10) : parseInt(equipo.descripcion,10)),
-    estado: (((editedEstados[equipo.id]!=undefined) && (editedEstados[equipo.id]!="")) ? parseInt(editedEstados[equipo.id],10) : parseInt(equipo.estado,10))
+    descripcion: (editedDescripciones[equipo.id] ? editedDescripciones[equipo.id] : equipo.descripcion), 
+    tipo: (editedTipos[equipo.id] ? parseInt(editedTipos[equipo.id],10) : parseInt(equipo.descripcion,10)),
+    estado: (editedEstados[equipo.id] ? parseInt(editedEstados[equipo.id],10) : parseInt(equipo.estado,10))
   }
   let json={
     method: 'PUT',

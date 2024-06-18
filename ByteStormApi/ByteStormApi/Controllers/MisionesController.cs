@@ -59,9 +59,15 @@ public class MisionesController : ControllerBase
             return NotFound();
         }
 
-        mision.Descripcion = misionDTO.Descripcion;
-        mision.Estado = misionDTO.Estado;
-        mision.IdOperativo = misionDTO.IdOperativo;
+        if (misionDTO.Descripcion != null){
+            mision.Descripcion = misionDTO.Descripcion;
+        }
+        if (misionDTO.Estado != null){
+            mision.Estado = misionDTO.Estado;
+        }
+        if (misionDTO.IdOperativo != null){
+            mision.IdOperativo = misionDTO.IdOperativo;
+        }
 
         if (misionDTO.Equipos != null)
         {

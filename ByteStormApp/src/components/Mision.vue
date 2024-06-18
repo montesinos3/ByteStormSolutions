@@ -48,11 +48,14 @@ async function removeMision(id) {
 }
 
 async function editMision(mision) {
+  console.log(mision.descripcion)
+  console.log(editedDescripciones[mision.id])
   let aux = { id: mision.id, 
-    descripcion: (((editedDescripciones[mision.id]!=undefined) && (editedDescripciones[mision.id]!="")) ? editedDescripciones[mision.id] : mision.descripcion), 
-    estado: (((editedEstados[mision.id]!=undefined) && (editedEstados[mision.id]!="")) ? parseInt(editedEstados[mision.id],10) : parseInt(mision.estado,10)),
-    equipos: (((editedEquipos[mision.id]!=undefined) && (editedEquipos[mision.id]!="")) ? editedEquipos[mision.id].replaceAll(" ","").split(',') : mision.equipos)
+    descripcion: (editedDescripciones[mision.id] ? editedDescripciones[mision.id] : mision.descripcion), 
+    estado: (editedEstados[mision.id] ? parseInt(editedEstados[mision.id],10) : parseInt(mision.estado,10)),
+    equipos: (editedEquipos[mision.id] ? editedEquipos[mision.id].replaceAll(" ","").split(',') : mision.equipos)
   }
+  console.log(mision.descripcion)
   let json={
     method: 'PUT',
     headers: {
@@ -95,7 +98,7 @@ async function editMision(mision) {
           <span class="mx-5">{{ mision.id }}</span>
           <span class="mr-5">{{ mision.descripcion }}</span>
           <span class="mr-5">{{ mision.estado }}</span>
-          <span class="mr-5">{{ mision.equipos }}</span>
+          <span class="mr-5">{{ (mision.equipos) ? mision.equipos : []}}</span>
           <span class="mr-5">{{ mision.idOperativo }}</span>
           <v-btn @click="removeMision(mision.id)" class="ml-5 bg-red">X</v-btn> 
           <v-btn @click="showEdit[mision.id] = !showEdit[mision.id]" class="bg-green" append-icon="mdi-pencil"> <!-- Hacer una nueva pag/componente para el edit -->

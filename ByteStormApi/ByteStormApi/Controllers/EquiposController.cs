@@ -60,10 +60,14 @@ public class EquiposController : ControllerBase
             return NotFound();
         }
 
-        equipo.Descripcion = equipoDTO.Descripcion;
-        equipo.Estado = equipoDTO.Estado;
-        equipo.Tipo = equipoDTO.Tipo;
-        equipo.IdMision = equipoDTO.IdMision;
+        if(equipoDTO.Descripcion != null)
+            equipo.Descripcion = equipoDTO.Descripcion;
+        if (equipoDTO.Estado != null)
+            equipo.Estado = equipoDTO.Estado;
+        if (equipoDTO.Tipo != null)
+            equipo.Tipo = equipoDTO.Tipo;
+        if (equipoDTO.IdMision != null)
+            equipo.IdMision = equipoDTO.IdMision;
 
         try
         {
