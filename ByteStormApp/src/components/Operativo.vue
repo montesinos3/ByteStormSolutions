@@ -17,7 +17,8 @@ onMounted(async () => {
 })
 
 async function addOperativo() {
-  let aux = { nombre: newNombre.value, rol: newRol.value, misiones: newMisiones.value.split(',')}
+  let mis = (newMisiones.value!="") ? newMisiones.value.replaceAll(" ","").split(',') : []
+  let aux = { nombre: newNombre.value, rol: newRol.value, misiones: mis}
   let json={
     method: 'POST',
     headers: {
@@ -50,7 +51,7 @@ async function editOperativo(operativo) {
   let aux = { id: operativo.id, 
     nombre: (((editedNombres[operativo.id]!=undefined) && (editedNombres[operativo.id]!="")) ? editedNombres[operativo.id] : operativo.nombre), 
     rol: (((editedRoles[operativo.id]!=undefined) && (editedRoles[operativo.id]!="")) ? editedRoles[operativo.id] : operativo.rol),
-    misiones: (((editedMisiones[operativo.id]!=undefined) && (editedMisiones[operativo.id]!="")) ? editedMisiones[operativo.id].split(',') : operativo.misiones)
+    misiones: (((editedMisiones[operativo.id]!=undefined) && (editedMisiones[operativo.id]!="")) ? editedMisiones[operativo.id].replaceAll(" ","").split(',') : operativo.misiones)
   }
   let json={
     method: 'PUT',
