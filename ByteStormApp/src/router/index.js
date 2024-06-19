@@ -11,13 +11,13 @@ import Operativo from '@/components/Operativo.vue'
 import Mision from '@/components/Mision.vue'
 import Equipo from '@/components/Equipo.vue'
 import App from '@/App.vue'
-import Ejemplo from '@/pages/ejemplo.vue'
+import Ejemplo from '@/components/ejemplo.vue'
 
 const routes = [
   { path: '/Operativo', component: Operativo},
   { path: '/Equipo', component: Equipo },
   { path: '/Mision', component: Mision },
-  { path: '/Home', component: Ejemplo }
+  { path: '/', component: Ejemplo }
 ]
 
 const router = createRouter({

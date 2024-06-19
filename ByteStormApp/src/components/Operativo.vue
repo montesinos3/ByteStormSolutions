@@ -9,7 +9,7 @@ let editedRoles = []
 let editedMisiones = reactive([''])
 const showEdit = ref([])
 
-let operativos = reactive([])
+const operativos = reactive([])
 onMounted(async () => {
     let res = await fetch("https://localhost:7208/api/Operativo").catch(error=>alert(`Error al cargar: ${error}`))
     let data = await res.json()
@@ -18,7 +18,7 @@ onMounted(async () => {
 
 async function addOperativo() {
   let mis = (newMisiones.value) ? JSON.parse(`[${newMisiones.value.replaceAll(" ","")}]`) : []
-  let aux = { nombre: newNombre.value, rol: newRol.value, misiones: mis}
+  let aux = { nombre: newNombre.value, rol: newRol.value, misiones: reactive(mis)}
   let json={
     method: 'POST',
     headers: {
