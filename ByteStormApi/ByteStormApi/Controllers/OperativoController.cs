@@ -53,7 +53,7 @@ public class OperativoController : ControllerBase
             return BadRequest();
         }
 
-        var operativo = await _context.Operativos.FindAsync(id);
+        var operativo = await _context.Operativos.Where(o => o.Id == id).Include(o => o.Misiones).FirstOrDefaultAsync();
         if (operativo == null)
         {
             return NotFound();
@@ -70,14 +70,18 @@ public class OperativoController : ControllerBase
             {
                 for (int i = 0; i < operativoDTO.Misiones.Count; i++)
                 {
-                    var aux = await _context.Misiones.FindAsync(operativoDTO.Misiones[i]);
-                    if (aux != null)
+                    if (operativo.Misiones != null)
                     {
-                        operativo.Misiones.Add(aux);
-                    }
-                    else
-                    {
-                        return BadRequest();
+                        var aux = await _context.Misiones.FindAsync(operativoDTO.Misiones[i]);
+                        if (aux != null)
+                        {
+                            if (operativo.Misiones != null)
+                                operativo.Misiones.Add(aux);
+                        }
+                        else
+                        {
+                            return BadRequest();
+                        }
                     }
                 }
             }

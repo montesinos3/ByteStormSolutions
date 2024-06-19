@@ -5,14 +5,14 @@
       >
         <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 
-        <v-toolbar-title>My files</v-toolbar-title>
+        <v-toolbar-title>{{ titulo }}</v-toolbar-title>
 
         <v-spacer></v-spacer>
 
         <template v-if="$vuetify.display.mdAndUp">
           <v-btn icon="mdi-magnify" variant="text"></v-btn>
 
-          <v-btn icon="mdi-filter" variant="text"></v-btn>
+          <v-btn icon="mdi-home" variant="text"></v-btn>
         </template>
 
         <v-btn icon="mdi-dots-vertical" variant="text"></v-btn>
@@ -21,8 +21,8 @@
       <v-navigation-drawer v-model="drawer" :location="undefined" temporary>
         <v-list>
           <v-list-item v-for="item in items" :key="item.value">
-            <router-link :to="item.to">
-                <v-btn>
+            <router-link :to="item.to" @onClick="titulo.value=item.title">
+                <v-btn >
                 <v-list-item-content>
                   <v-list-item-title>{{ item.title }}</v-list-item-title>
                 </v-list-item-content>
@@ -34,8 +34,10 @@
 </template>
 
 <script setup>
+import App from '@/App.vue';
 import { ref, reactive, watch } from 'vue'
-
+let titulo=ref('')
+titulo.value="Menu"
 const drawer = ref(false)
 const group = ref(null)
 const items = reactive([

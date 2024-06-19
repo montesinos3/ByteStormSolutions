@@ -6,10 +6,10 @@ let newEstado = ref('')
 let newEquipos = ref('')
 let editedDescripciones = []
 let editedEstados = []
-let editedEquipos = ['']
+let editedEquipos = reactive([''])
 const showEdit = ref([])
 
-let misiones = ref([])
+let misiones = reactive([])
 onMounted(async () => {
     let res = await fetch("https://localhost:7208/api/Misiones").catch(error=>alert(`Error al cargar: ${error}`))
     let data = await res.json()
@@ -17,8 +17,9 @@ onMounted(async () => {
 })
 
 async function addMision() {
+  console.log(newEstado.value)
   let eq = (newEquipos.value) ? JSON.parse(`[${newEquipos.value.replaceAll(" ","")}]`) : []
-  let aux = { descripcion: newDescripcion.value, estado: parseInt(newEstado.value,10), equipos: eq}
+  let aux = { descripcion: newDescripcion.value, estado: newEstado.value, equipos: eq}
   let json={
     method: 'POST',
     headers: {
@@ -52,14 +53,14 @@ async function removeMision(id) {
 }
 
 async function editMision(mision) {
-  console.log(mision.descripcion)
-  console.log(editedDescripciones[mision.id])
+  console.log(mision.estado)
+  console.log(editedEstados[mision.id])
   let aux = { id: mision.id, 
     descripcion: (editedDescripciones[mision.id] ? editedDescripciones[mision.id] : mision.descripcion), 
-    estado: (editedEstados[mision.id] ? parseInt(editedEstados[mision.id],10) : parseInt(mision.estado,10)),
-    equipos: (editedEquipos[mision.id] ? JSON.parse(`[${editedEquipos[mision.id].replaceAll(" ","")}]`) : mision.equipos)
+    estado: (((editedEstados[mision.id] || editedEstados[mision.id]==0) && editedEstados[mision.id]!="") ? editedEstados[mision.id]: mision.estado),
+    equipos: (editedEquipos[mision.id] ? JSON.parse(`[${editedEquipos[mision.id].replaceAll(" ","")}]`) : null)
   }
-  console.log(mision.descripcion)
+  console.log(aux.estado)
   let json={
     method: 'PUT',
     headers: {
@@ -72,7 +73,8 @@ async function editMision(mision) {
   if(res.status==204 || res.status==200){
     misiones.value.find((o)=>o.id==mision.id).descripcion = aux.descripcion
     misiones.value.find((o)=>o.id==mision.id).estado = aux.estado
-    misiones.value.find((o)=>o.id==mision.id).equipos.push(aux.equipos)
+    if(aux.equipos)
+      misiones.value.find((o)=>o.id==mision.id).equipos.push(aux.equipos)
   } else{
     alert("Error al editar mision")
   }
@@ -81,16 +83,52 @@ async function editMision(mision) {
   editedEquipos[mision.id]=''
 }
 
+const elems=[{title: 'Planificada', value:0}, {title: 'Activa', value:1}, {title: 'Completada', value:2}]
+
 </script>
 
 <template>
-  <form @submit.prevent="addMision" class="ma-5">
-    <v-text-field v-model="newDescripcion" required placeholder="nuevo descripcion para mision" max-width="400"></v-text-field>
-    <v-text-field v-model="newEstado" required placeholder="estado [Planificada(0), Activa(1), Completada(2)]" max-width="400"></v-text-field>
-    <v-text-field v-model="newEquipos" placeholder="ids de las equipos de la mision" max-width="400"></v-text-field>
+  <form @submit.prevent="addMision" class="d-flex flex-column align-center">
+    <v-text-field v-model="newDescripcion" required placeholder="nuevo descripcion para mision" width="400"></v-text-field>
+    <v-select v-model="newEstado" required :items="elems" density="comfortable" width="400"></v-select>
+    <v-text-field v-model="newEquipos" placeholder="ids de las equipos de la mision" width="400"></v-text-field>
     <v-btn type="submit" class="mb-5">Añadir Mision</v-btn> 
   </form>
-    <ul> <!-- Probar a hacer una tabla -->
+
+  <v-table height="315px" fixed-header>
+    <thead>
+      <tr>
+        <th class="text-left">Id</th>
+        <th class="text-left">Descripcion</th>
+        <th class="text-left">Estado</th>
+        <th class="text-left">Equipos</th>
+        <th class="text-left">Id Operativo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="mision in misiones.value":key="mision.id">
+        <td>{{ mision.id }}</td>
+        <td>{{ mision.descripcion }}</td>
+        <td>{{ elems.at(mision.estado).title }}</td>
+        <td>{{ mision.equipos.toString() }}</td>
+        <td>{{ mision.idOperativo }}</td>
+        <v-btn @click="removeMision(mision.id)" class="ml-5 bg-red">X</v-btn> 
+          <v-btn @click="showEdit[mision.id] = !showEdit[mision.id]" class="bg-green" append-icon="mdi-pencil"> <!-- Hacer una nueva pag/componente para el edit -->
+            <!-- <img src="@/assets/lapiz.png" alt="edit"> -->
+          </v-btn>
+          <td v-show="showEdit[mision.id]">
+            <v-form @submit.prevent="editMision(mision)" v-show="showEdit[mision.id]">
+            <v-text-field v-model="editedDescripciones[mision.id]" placeholder="Edita el descripcion de la mision" max-width="200"></v-text-field>
+            <v-select v-model="editedEstados[mision.id]" :items="elems" density="comfortable" max-width="200"></v-select>
+            <v-text-field v-model="editedEquipos[mision.id]" placeholder="Añade equipos a la mision" max-width="200"></v-text-field>
+            <v-btn type="submit">Editar</v-btn> 
+          </v-form>
+          </td>
+      </tr>
+    </tbody>
+  </v-table>
+
+    <!-- <ul> 
         <li>
           <span class="mx-5">Id</span>
           <span class="mr-5">Descripcion</span>
@@ -98,15 +136,15 @@ async function editMision(mision) {
           <span class="mr-5">Equipos</span>
           <span class="mr-5">Id Operativo</span>
         </li>
-        <li v-for="mision in misiones" :key="mision.id">
+        <li v-for="mision in misiones.value" :key="mision.id">
           <span class="mx-5">{{ mision.id }}</span>
           <span class="mr-5">{{ mision.descripcion }}</span>
           <span class="mr-5">{{ mision.estado }}</span>
           <span class="mr-5">{{ mision.equipos.toString() }}</span>
           <span class="mr-5">{{ mision.idOperativo }}</span>
           <v-btn @click="removeMision(mision.id)" class="ml-5 bg-red">X</v-btn> 
-          <v-btn @click="showEdit[mision.id] = !showEdit[mision.id]" class="bg-green" append-icon="mdi-pencil"> <!-- Hacer una nueva pag/componente para el edit -->
-            <!-- <img src="@/assets/lapiz.png" alt="edit"> -->
+          <v-btn @click="showEdit[mision.id] = !showEdit[mision.id]" class="bg-green" append-icon="mdi-pencil"> Hacer una nueva pag/componente para el edit
+           
           </v-btn>
           <v-form @submit.prevent="editMision(mision)" v-show="showEdit[mision.id]">
             <input v-model="editedDescripciones[mision.id]" placeholder="Edita el descripcion de la mision">
@@ -115,7 +153,7 @@ async function editMision(mision) {
             <v-btn type="submit">Editar</v-btn> 
           </v-form>
         </li>
-    </ul>
+    </ul> -->
 </template>
 
 <style scoped>

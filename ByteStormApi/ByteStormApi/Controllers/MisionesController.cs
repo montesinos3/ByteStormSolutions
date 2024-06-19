@@ -53,7 +53,7 @@ public class MisionesController : ControllerBase
             return BadRequest();
         }
 
-        var mision = await _context.Misiones.FindAsync(id);
+        var mision = await _context.Misiones.Where(m=>m.Id==id).Include(m => m.Equipos).FirstOrDefaultAsync();
         if (mision == null)
         {
             return NotFound();
@@ -82,14 +82,18 @@ public class MisionesController : ControllerBase
             {
                 for (int i = 0; i < misionDTO.Equipos.Count; i++)
                 {
-                    var aux = _context.Equipos.Find(misionDTO.Equipos[i]);
-                    if (aux != null)
+                    if (misionDTO.Equipos[i] != null)
                     {
-                        mision.Equipos.Add(aux);
-                    }
-                    else
-                    {
-                        return BadRequest();
+                        var aux = _context.Equipos.Find(misionDTO.Equipos[i]);
+                        if (aux != null)
+                        {
+                            if (mision.Equipos != null)
+                                mision.Equipos.Add(aux);
+                        }
+                        else
+                        {
+                            return BadRequest();
+                        }
                     }
                 }
             }

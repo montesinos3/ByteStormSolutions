@@ -1,13 +1,7 @@
-- Página opereativo, si actualizo los campos, no se reflejan hasta reiniciar
+- Página operativo, si actualizo los campos, no se reflejan hasta reiniciar
 
-- Si añadimos varias misiones a un operativo, debe dejarlas en un único array, no un array por cada una de las misiones
+- Enumerados: Hacer que su input sea más correcto. Ejemplo: checkbox, radio buttons o select (HECHO)
 
-- Enumerados: Hacer que su input sea más correcto. Ejemplo: checkbox, radio buttons o select
-
-- Respecto a esto. También habría que darle una vuelta al tema de asignar misiones. Para crear una interfaz más clara
-
-- Cuando editamos una mision, para proporcionar un estado, el operativo asignado se borra. Además de que no se actualiza la interfaz
+- Respecto a esto. También habría que darle una vuelta al tema de asignar misiones. Para crear una interfaz más clara (checkboxs)
 
 - (Opcional) Los cambios importantes, como borrar, deberían tener un dialogo de confirmación
-
-- Los enumerados como el estado. Cuando se muestren en la tabla, que sean su nombre asociado, no el id (caso de estado o tipo en equipos)

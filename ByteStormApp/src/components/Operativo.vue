@@ -6,10 +6,10 @@ let newRol = ref('')
 let newMisiones = ref('')
 let editedNombres = []
 let editedRoles = []
-let editedMisiones = ['']
+let editedMisiones = reactive([''])
 const showEdit = ref([])
 
-let operativos = ref([])
+let operativos = reactive([])
 onMounted(async () => {
     let res = await fetch("https://localhost:7208/api/Operativo").catch(error=>alert(`Error al cargar: ${error}`))
     let data = await res.json()
@@ -55,7 +55,7 @@ async function editOperativo(operativo) {
   let aux = { id: operativo.id, 
     nombre: (editedNombres[operativo.id] ? editedNombres[operativo.id] : operativo.nombre), 
     rol: (editedRoles[operativo.id] ? editedRoles[operativo.id] : operativo.rol),
-    misiones: (editedMisiones[operativo.id] ? JSON.parse(`[${editedMisiones[operativo.id].replaceAll(" ","")}]`) : operativo.misiones)
+    misiones: (editedMisiones[operativo.id] ? JSON.parse(`[${editedMisiones[operativo.id].replaceAll(" ","")}]`) : null)
   }
   let json={
     method: 'PUT',
@@ -69,7 +69,8 @@ async function editOperativo(operativo) {
   if(res.status==204 || res.status==200){
     operativos.value.find((o)=>o.id==operativo.id).nombre = aux.nombre
     operativos.value.find((o)=>o.id==operativo.id).rol = aux.rol
-    operativos.value.find((o)=>o.id==operativo.id).misiones.push(aux.misiones)
+    if(aux.misiones)
+      operativos.value.find((o)=>o.id==operativo.id).misiones.push(aux.misiones)
   } else{
     alert("Error al editar operativo")
   }
@@ -81,27 +82,62 @@ async function editOperativo(operativo) {
 </script>
 
 <template>
-  <form @submit.prevent="addOperativo" class="ma-5">
-    <v-text-field v-model="newNombre" required placeholder="nuevo nombre para operativo" max-width="400"></v-text-field>
-    <v-text-field v-model="newRol" required placeholder="nuevo rol para operativo" max-width="400"></v-text-field>
-    <v-text-field v-model="newMisiones" placeholder="ids de las misiones del operativo" max-width="400"></v-text-field>
+  <form @submit.prevent="addOperativo" class="d-flex flex-column align-center">
+    <v-text-field v-model="newNombre" required placeholder="nuevo nombre para operativo" width="400"></v-text-field>
+    <v-text-field v-model="newRol" required placeholder="nuevo rol para operativo" width="400"></v-text-field>
+    <v-text-field v-model="newMisiones" placeholder="ids de las misiones del operativo" width="400"></v-text-field>
     <v-btn type="submit" class="mb-5">Añadir Operativo</v-btn> 
   </form>
-    <ul> <!-- Probar a hacer una tabla -->
+
+
+  <v-table height="315px" fixed-header>
+    <thead>
+      <tr>
+        <th class="text-left">Id</th>
+        <th class="text-left">Nombre</th>
+        <th class="text-left">Rol</th>
+        <th class="text-left">Misiones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="operativo in operativos.value":key="operativo.id">
+        <td>{{ operativo.id }}</td>
+        <td>{{ operativo.nombre }}</td>
+        <td>{{ operativo.rol }}</td>
+        <td>{{ operativo.misiones.toString() }}</td>
+
+        <v-btn @click="removeOperativo(operativo.id)" class="ml-5 bg-red">X</v-btn> 
+          <v-btn @click="showEdit[operativo.id] = !showEdit[operativo.id]" class="bg-green" append-icon="mdi-pencil"></v-btn>
+          <td v-show="showEdit[operativo.id]">
+            <v-form @submit.prevent="editOperativo(operativo)" v-show="showEdit[operativo.id]">
+            <input v-model="editedNombres[operativo.id]" placeholder="Edita el nombre del operativo">
+            <input v-model="editedRoles[operativo.id]" placeholder="Edita el rol del operativo">
+            <input v-model="editedMisiones[operativo.id]" placeholder="Añade misiones al operativo">
+            <v-btn type="submit">Editar</v-btn> 
+            </v-form>
+          </td>
+      </tr>
+    </tbody>
+  </v-table>
+
+
+
+
+    <!--<ul>  Probar a hacer una tabla 
         <li>
           <span class="mx-5">Id</span>
           <span class="mr-5">Nombre</span>
           <span class="mr-5">Rol</span>
           <span class="mr-5">Misiones</span>
         </li>
-        <li v-for="operativo in operativos" :key="operativo.id">
+        <li v-for="operativo in operativos.value" :key="operativo.id">
           <span class="mx-5">{{ operativo.id }}</span>
           <span class="mr-5">{{ operativo.nombre }}</span>
           <span class="mr-5">{{ operativo.rol }}</span>
           <span class="mr-5">{{ operativo.misiones.toString() }}</span>
           <v-btn @click="removeOperativo(operativo.id)" class="ml-5 bg-red">X</v-btn> 
-          <v-btn @click="showEdit[operativo.id] = !showEdit[operativo.id]" class="bg-green" append-icon="mdi-pencil"> <!-- Hacer una nueva pag/componente para el edit -->
-            <!-- <img src="@/assets/lapiz.png" alt="edit"> -->
+          <v-btn @click="showEdit[operativo.id] = !showEdit[operativo.id]" class="bg-green" append-icon="mdi-pencil"> Hacer una nueva pag/componente para el edit
+            <img src="@/assets/lapiz.png" alt="edit">
           </v-btn>
           <v-form @submit.prevent="editOperativo(operativo)" v-show="showEdit[operativo.id]">
             <input v-model="editedNombres[operativo.id]" placeholder="Edita el nombre del operativo">
@@ -110,7 +146,7 @@ async function editOperativo(operativo) {
             <v-btn type="submit">Editar</v-btn> 
           </v-form>
         </li>
-    </ul>
+    </ul> -->
 </template>
 
 <style scoped>
