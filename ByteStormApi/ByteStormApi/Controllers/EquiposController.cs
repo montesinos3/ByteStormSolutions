@@ -60,10 +60,30 @@ public class EquiposController : ControllerBase
             return NotFound();
         }
 
-        equipo.Descripcion = equipoDTO.Descripcion;
-        equipo.Estado = equipoDTO.Estado;
-        equipo.Tipo = equipoDTO.Tipo;
-        equipo.IdMision = equipoDTO.IdMision;
+        if(equipoDTO.Descripcion != null)
+            equipo.Descripcion = equipoDTO.Descripcion;
+        if (equipoDTO.Estado != null){
+            if (equipoDTO.Estado == Estado.EnUso || equipoDTO.Estado == Estado.Disponible)
+            {
+                equipo.Estado = equipoDTO.Estado;
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+        if (equipoDTO.Tipo != null){
+            if (equipoDTO.Tipo == Tipo.Software || equipoDTO.Tipo == Tipo.Hardware)
+            {
+                equipo.Tipo = equipoDTO.Tipo;
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+        if (equipoDTO.IdMision != null)
+            equipo.IdMision = equipoDTO.IdMision;
 
         try
         {
@@ -87,10 +107,25 @@ public class EquiposController : ControllerBase
         var equipo = new Equipo
         {
             Descripcion = equipoDTO.Descripcion,
-            Estado = equipoDTO.Estado,
             Tipo = equipoDTO.Tipo,
             IdMision = equipoDTO.IdMision
         };
+        if (equipoDTO.Estado != null)
+        {
+            if (equipoDTO.Estado != Estado.EnUso && equipoDTO.Estado != Estado.Disponible)
+            {
+                return BadRequest();
+            }
+        }
+        equipo.Estado = equipoDTO.Estado;
+        if (equipoDTO.Tipo != null)
+        {
+            if (equipoDTO.Tipo != Tipo.Software && equipoDTO.Tipo != Tipo.Hardware)
+            {
+                return BadRequest();
+            }
+        }
+        equipo.Tipo = equipoDTO.Tipo;
 
         _context.Equipos.Add(equipo);
         await _context.SaveChangesAsync();

@@ -3,10 +3,10 @@ import { ref, onMounted, reactive } from 'vue'
 
 let newNombre = ref('')
 let newRol = ref('')
-let newMisiones = ref([])
+let newMisiones = ref('')
 let editedNombres = []
 let editedRoles = []
-let editedMisiones = [[]]
+let editedMisiones = ['']
 const showEdit = ref([])
 
 let operativos = ref([])
@@ -17,7 +17,8 @@ onMounted(async () => {
 })
 
 async function addOperativo() {
-  let aux = { nombre: newNombre.value, rol: newRol.value, misiones: newMisiones.value}
+  let mis = (newMisiones.value) ? JSON.parse(`[${newMisiones.value.replaceAll(" ","")}]`) : []
+  let aux = { nombre: newNombre.value, rol: newRol.value, misiones: mis}
   let json={
     method: 'POST',
     headers: {
@@ -27,11 +28,15 @@ async function addOperativo() {
   }
 
   let response = await fetch("https://localhost:7208/api/Operativo", json).catch(error=>alert(error))
-  let data = await response.json()
-  operativos.value.push(data)
+  if(response.status == 201 || response.status==200){
+    let data = await response.json()
+    operativos.value.push(data)
+  } else{
+    alert("Error al crear operativo")
+  }
   newNombre.value=''
   newRol.value=''
-  newMisiones.value=[]
+  newMisiones.value=''
 }
 
 async function removeOperativo(id) {
@@ -48,9 +53,9 @@ async function removeOperativo(id) {
 
 async function editOperativo(operativo) {
   let aux = { id: operativo.id, 
-    nombre: (((editedNombres[operativo.id]!=undefined) && (editedNombres[operativo.id]!="")) ? editedNombres[operativo.id] : operativo.nombre), 
-    rol: (((editedRoles[operativo.id]!=undefined) && (editedRoles[operativo.id]!="")) ? editedRoles[operativo.id] : operativo.rol),
-    misiones: (((editedMisiones[operativo.id]!=undefined) && (editedMisiones[operativo.id]!=[])) ? editedMisiones[operativo.id] : operativo.misiones)
+    nombre: (editedNombres[operativo.id] ? editedNombres[operativo.id] : operativo.nombre), 
+    rol: (editedRoles[operativo.id] ? editedRoles[operativo.id] : operativo.rol),
+    misiones: (editedMisiones[operativo.id] ? JSON.parse(`[${editedMisiones[operativo.id].replaceAll(" ","")}]`) : operativo.misiones)
   }
   let json={
     method: 'PUT',
@@ -70,16 +75,16 @@ async function editOperativo(operativo) {
   }
   editedNombres[operativo.id]=''
   editedRoles[operativo.id]=''
-  editedMisiones[operativo.id]=[]
+  editedMisiones[operativo.id]=''
 }
 
 </script>
 
 <template>
   <form @submit.prevent="addOperativo" class="ma-5">
-    <v-text-field v-model="newNombre" required placeholder="nuevo nombre para operativo" max-width="300"></v-text-field>
-    <v-text-field v-model="newRol" required placeholder="nuevo rol para operativo" max-width="300"></v-text-field>
-    <v-text-field v-model="newMisiones" placeholder="ids de las misiones del operativo" max-width="300"></v-text-field>
+    <v-text-field v-model="newNombre" required placeholder="nuevo nombre para operativo" max-width="400"></v-text-field>
+    <v-text-field v-model="newRol" required placeholder="nuevo rol para operativo" max-width="400"></v-text-field>
+    <v-text-field v-model="newMisiones" placeholder="ids de las misiones del operativo" max-width="400"></v-text-field>
     <v-btn type="submit" class="mb-5">Añadir Operativo</v-btn> 
   </form>
     <ul> <!-- Probar a hacer una tabla -->
@@ -93,7 +98,7 @@ async function editOperativo(operativo) {
           <span class="mx-5">{{ operativo.id }}</span>
           <span class="mr-5">{{ operativo.nombre }}</span>
           <span class="mr-5">{{ operativo.rol }}</span>
-          <span class="mr-5">{{ operativo.misiones }}</span>
+          <span class="mr-5">{{ operativo.misiones.toString() }}</span>
           <v-btn @click="removeOperativo(operativo.id)" class="ml-5 bg-red">X</v-btn> 
           <v-btn @click="showEdit[operativo.id] = !showEdit[operativo.id]" class="bg-green" append-icon="mdi-pencil"> <!-- Hacer una nueva pag/componente para el edit -->
             <!-- <img src="@/assets/lapiz.png" alt="edit"> -->
