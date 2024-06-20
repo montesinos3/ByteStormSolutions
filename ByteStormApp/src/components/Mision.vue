@@ -10,14 +10,23 @@ let editedEquipos = reactive([''])
 const showEdit = ref([])
 
 let misiones = reactive([])
+const nombreOperativos = ref()
+const nombreEquipos = reactive([])
 onMounted(async () => {
     let res = await fetch("https://localhost:7208/api/Misiones").catch(error=>alert(`Error al cargar: ${error}`))
     let data = await res.json()
     misiones.value = data
+
+    let resO = await fetch("https://localhost:7208/api/Operativo").catch(error=>alert(`Error al cargar: ${error}`))
+    let dataO = await resO.json()
+    nombreOperativos.value = dataO
+
+    let resE = await fetch("https://localhost:7208/api/Equipos").catch(error=>alert(`Error al cargar: ${error}`))
+    let dataE = await resE.json()
+    nombreEquipos.value = dataE
 })
 
 async function addMision() {
-  console.log(newEstado.value)
   let eq = (newEquipos.value) ? JSON.parse(`[${newEquipos.value.replaceAll(" ","")}]`) : []
   let aux = { descripcion: newDescripcion.value, estado: newEstado.value, equipos: eq}
   let json={
@@ -31,6 +40,15 @@ async function addMision() {
   let response = await fetch("https://localhost:7208/api/Misiones", json).catch(error=>alert(error))
   if(response.status == 201 || response.status==200){
     let data = await response.json()
+
+    if(aux.equipos){
+      for(let e of aux.equipos){
+        let index=misiones.value.find(m=>m.equipos.find(eq=>e==eq)).equipos.indexOf(e)
+        misiones.value.find(m=>m.equipos.find(eq=>e==eq)).equipos.splice(index,1)
+      }
+    }
+      
+
     misiones.value.push(data)
   } else{
     alert("Error al crear mision")
@@ -53,14 +71,11 @@ async function removeMision(id) {
 }
 
 async function editMision(mision) {
-  console.log(mision.estado)
-  console.log(editedEstados[mision.id])
   let aux = { id: mision.id, 
     descripcion: (editedDescripciones[mision.id] ? editedDescripciones[mision.id] : mision.descripcion), 
     estado: (((editedEstados[mision.id] || editedEstados[mision.id]==0) && editedEstados[mision.id]!="") ? editedEstados[mision.id]: mision.estado),
     equipos: (editedEquipos[mision.id] ? JSON.parse(`[${editedEquipos[mision.id].replaceAll(" ","")}]`) : null)
   }
-  console.log(aux.estado)
   let json={
     method: 'PUT',
     headers: {
@@ -71,10 +86,15 @@ async function editMision(mision) {
   let res = await fetch(`https://localhost:7208/api/Misiones/${mision.id}`, json).catch(error=>alert(error))
   
   if(res.status==204 || res.status==200){
-    misiones.value.find((o)=>o.id==mision.id).descripcion = aux.descripcion
-    misiones.value.find((o)=>o.id==mision.id).estado = aux.estado
-    if(aux.equipos)
-      misiones.value.find((o)=>o.id==mision.id).equipos.push(aux.equipos)
+    misiones.value.find((m)=>m.id==mision.id).descripcion = aux.descripcion
+    misiones.value.find((m)=>m.id==mision.id).estado = aux.estado
+    if(aux.equipos){
+      for(let e of aux.equipos){
+        let index=misiones.value.find(o=>o.equipos.find(eq=>e==eq)).equipos.indexOf(e)
+        misiones.value.find(m=>m.equipos.find(eq=>eq==e)).equipos.splice(index,1)
+        misiones.value.find((m)=>m.id==mision.id).equipos.push(e)
+      }
+    }
   } else{
     alert("Error al editar mision")
   }
@@ -84,6 +104,28 @@ async function editMision(mision) {
 }
 
 const elems=[{title: 'Planificada', value:0}, {title: 'Activa', value:1}, {title: 'Completada', value:2}]
+
+
+function obtenerNombresEquipos(idEquipos){
+  let nombres = []
+  for(let e of nombreEquipos.value){
+    for(let id of idEquipos){
+      if(e.id == id){
+        nombres.push(e.descripcion)
+      }
+    }
+  }
+  return nombres
+}
+
+function obtenerOperativo(idOperativo){
+  for(let o of nombreOperativos.value){
+    if(o.id == idOperativo){
+      return o.nombre
+    }
+  }
+}
+
 
 </script>
 
@@ -102,7 +144,7 @@ const elems=[{title: 'Planificada', value:0}, {title: 'Activa', value:1}, {title
         <th class="text-left">Descripcion</th>
         <th class="text-left">Estado</th>
         <th class="text-left">Equipos</th>
-        <th class="text-left">Id Operativo</th>
+        <th class="text-left">Operativo</th>
       </tr>
     </thead>
     <tbody>
@@ -110,8 +152,8 @@ const elems=[{title: 'Planificada', value:0}, {title: 'Activa', value:1}, {title
         <td>{{ mision.id }}</td>
         <td>{{ mision.descripcion }}</td>
         <td>{{ elems.at(mision.estado).title }}</td>
-        <td>{{ mision.equipos.toString() }}</td>
-        <td>{{ mision.idOperativo }}</td>
+        <td>{{ obtenerNombresEquipos(mision.equipos).toString() }}</td>
+        <td>{{ obtenerOperativo(mision.idOperativo) }}</td>
         <v-btn @click="removeMision(mision.id)" class="ml-5 bg-red">X</v-btn> 
           <v-btn @click="showEdit[mision.id] = !showEdit[mision.id]" class="bg-green" append-icon="mdi-pencil"> <!-- Hacer una nueva pag/componente para el edit -->
             <!-- <img src="@/assets/lapiz.png" alt="edit"> -->

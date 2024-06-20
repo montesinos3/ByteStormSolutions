@@ -10,15 +10,20 @@ let editedMisiones = reactive([''])
 const showEdit = ref([])
 
 const operativos = reactive([])
+const nombreMisiones = reactive([])
 onMounted(async () => {
     let res = await fetch("https://localhost:7208/api/Operativo").catch(error=>alert(`Error al cargar: ${error}`))
     let data = await res.json()
     operativos.value = data
+
+    let resM = await fetch("https://localhost:7208/api/Misiones").catch(error=>alert(`Error al cargar: ${error}`))
+    let dataM = await resM.json()
+    nombreMisiones.value = dataM
 })
 
 async function addOperativo() {
   let mis = (newMisiones.value) ? JSON.parse(`[${newMisiones.value.replaceAll(" ","")}]`) : []
-  let aux = { nombre: newNombre.value, rol: newRol.value, misiones: reactive(mis)}
+  let aux = { nombre: newNombre.value, rol: newRol.value, misiones: mis}
   let json={
     method: 'POST',
     headers: {
@@ -30,6 +35,17 @@ async function addOperativo() {
   let response = await fetch("https://localhost:7208/api/Operativo", json).catch(error=>alert(error))
   if(response.status == 201 || response.status==200){
     let data = await response.json()
+
+
+    if(aux.misiones){
+      for(let m of aux.misiones){
+        let index=operativos.value.find(o=>o.misiones.find(mis=>m==mis)).misiones.indexOf(m)
+        operativos.value.find(o=>o.misiones.find(mis=>m==mis)).misiones.splice(index,1)
+      }
+    }
+
+
+
     operativos.value.push(data)
   } else{
     alert("Error al crear operativo")
@@ -69,14 +85,31 @@ async function editOperativo(operativo) {
   if(res.status==204 || res.status==200){
     operativos.value.find((o)=>o.id==operativo.id).nombre = aux.nombre
     operativos.value.find((o)=>o.id==operativo.id).rol = aux.rol
-    if(aux.misiones)
-      operativos.value.find((o)=>o.id==operativo.id).misiones.push(aux.misiones)
+    if(aux.misiones){
+      for(let m of aux.misiones){
+        let index=operativos.value.find(o=>o.misiones.find(mis=>m==mis)).misiones.indexOf(m)
+        operativos.value.find(o=>o.misiones.find(mis=>m==mis)).misiones.splice(index,1)
+        operativos.value.find((o)=>o.id==operativo.id).misiones.push(m)
+      }
+    }
   } else{
     alert("Error al editar operativo")
   }
   editedNombres[operativo.id]=''
   editedRoles[operativo.id]=''
   editedMisiones[operativo.id]=''
+}
+
+function obtenerNombres(idMisiones){
+  let nombres = []
+  for(let m of nombreMisiones.value){
+    for(let id of idMisiones){
+      if(m.id == id){
+        nombres.push(m.descripcion)
+      }
+    }
+  }
+  return nombres
 }
 
 </script>
@@ -104,15 +137,15 @@ async function editOperativo(operativo) {
         <td>{{ operativo.id }}</td>
         <td>{{ operativo.nombre }}</td>
         <td>{{ operativo.rol }}</td>
-        <td>{{ operativo.misiones.toString() }}</td>
+        <td>{{ obtenerNombres(operativo.misiones).toString() }}</td>
 
         <v-btn @click="removeOperativo(operativo.id)" class="ml-5 bg-red">X</v-btn> 
           <v-btn @click="showEdit[operativo.id] = !showEdit[operativo.id]" class="bg-green" append-icon="mdi-pencil"></v-btn>
           <td v-show="showEdit[operativo.id]">
             <v-form @submit.prevent="editOperativo(operativo)" v-show="showEdit[operativo.id]">
-            <input v-model="editedNombres[operativo.id]" placeholder="Edita el nombre del operativo">
-            <input v-model="editedRoles[operativo.id]" placeholder="Edita el rol del operativo">
-            <input v-model="editedMisiones[operativo.id]" placeholder="Añade misiones al operativo">
+            <v-text-field v-model="editedNombres[operativo.id]" placeholder="Edita el nombre del operativo"></v-text-field>
+            <v-text-field v-model="editedRoles[operativo.id]" placeholder="Edita el rol del operativo"></v-text-field>
+            <v-text-field v-model="editedMisiones[operativo.id]" placeholder="Añade misiones al operativo"></v-text-field>
             <v-btn type="submit">Editar</v-btn> 
             </v-form>
           </td>

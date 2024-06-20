@@ -10,10 +10,15 @@ let editedEstados = []
 const showEdit = ref([])
 
 let equipos = reactive([])
+const nombreMisiones = reactive([])
 onMounted(async () => {
     let res = await fetch("https://localhost:7208/api/Equipos").catch(error=>alert(`Error al cargar: ${error}`))
     let data = await res.json()
     equipos.value = data
+
+    let resM = await fetch("https://localhost:7208/api/Misiones").catch(error=>alert(`Error al cargar: ${error}`))
+    let dataM = await resM.json()
+    nombreMisiones.value = dataM
 })
 
 async function addEquipo() {
@@ -83,6 +88,14 @@ async function editEquipo(equipo) {
 const es = [{title:'Disponible', value:0}, {title:'En Uso', value:1}]
 const ts = [{title:'Software', value:0}, {title:'Hardware', value:1}]
 
+function obtenerMision(idMision){
+  for(let m of nombreMisiones.value){
+    if(m.id == idMision){
+      return m.descripcion
+    }
+  }
+}
+
 </script>
 
 <template>
@@ -100,7 +113,7 @@ const ts = [{title:'Software', value:0}, {title:'Hardware', value:1}]
         <th class="text-left">Descripcion</th>
         <th class="text-left">Estado</th>
         <th class="text-left">Tipo</th>
-        <th class="text-left">Id Mision</th>
+        <th class="text-left">Mision</th>
       </tr>
     </thead>
     <tbody>
@@ -109,7 +122,7 @@ const ts = [{title:'Software', value:0}, {title:'Hardware', value:1}]
         <td>{{ equipo.descripcion }}</td>
         <td>{{ es.at(equipo.estado).title }}</td>
         <td>{{ ts.at(equipo.tipo).title }}</td>
-        <td>{{ equipo.idMision }}</td>
+        <td>{{ obtenerMision(equipo.idMision) }}</td>
         <td><v-btn @click="removeEquipo(equipo.id)" class="ml-5 bg-red">X</v-btn> 
           <v-btn @click="showEdit[equipo.id] = !showEdit[equipo.id]" class="bg-green" append-icon="mdi-pencil"> <!-- Hacer una nueva pag/componente para el edit -->
             <!-- <img src="@/assets/lapiz.png" alt="edit"> -->

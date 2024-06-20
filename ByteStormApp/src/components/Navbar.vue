@@ -12,7 +12,7 @@
         <template v-if="$vuetify.display.mdAndUp">
           <v-btn icon="mdi-magnify" variant="text"></v-btn>
 
-          <v-btn icon="mdi-home" variant="text" :to="titulo.to" @onClick="titulo.title='Menu'"></v-btn>
+          <v-btn icon="mdi-home" variant="text" :to="titulo.to"></v-btn>
         </template>
 
         <v-btn icon="mdi-dots-vertical" variant="text"></v-btn>
@@ -21,7 +21,7 @@
       <v-navigation-drawer v-model="drawer" :location="undefined" temporary>
         <v-list>
           <v-list-item v-for="item in items" :key="item.value">
-            <router-link :to="item.to" @onClick="titulo.title=item.title">
+            <router-link :to="item.to">
                 <v-btn>
                 <v-list-item-content>
                   <v-list-item-title>{{ item.title }}</v-list-item-title>
@@ -36,10 +36,21 @@
 <script setup>
 import App from '@/App.vue';
 import { ref, reactive, watch } from 'vue'
-const titulo=reactive({
-  title: 'Menu',
-  to: "/"
-})
+
+const route = useRoute();
+
+const titulo = reactive({
+  title: route.name,
+  to: '/'
+});
+
+watch(
+  () => route.name,
+  (newName) => {
+    titulo.title = newName;
+  }
+);
+
 const drawer = ref(false)
 const group = ref(null)
 const items = reactive([

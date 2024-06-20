@@ -14,10 +14,10 @@ import App from '@/App.vue'
 import Ejemplo from '@/components/ejemplo.vue'
 
 const routes = [
-  { path: '/Operativo', component: Operativo},
-  { path: '/Equipo', component: Equipo },
-  { path: '/Mision', component: Mision },
-  { path: '/', component: Ejemplo }
+  { path: '/Operativo', component: Operativo, name:'Operativo' },
+  { path: '/Equipo', component: Equipo, name:'Equipo' },
+  { path: '/Mision', component: Mision, name:'Mision' },
+  { path: '/', component: Ejemplo, name:'Menu' }
 ]
 
 const router = createRouter({
