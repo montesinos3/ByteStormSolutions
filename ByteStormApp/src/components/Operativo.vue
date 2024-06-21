@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, reactive } from 'vue'
+import { ref, onMounted, reactive, computed } from 'vue'
 
 let newNombre = ref('Nuevo Operativo')
 let newRol = ref('Nuevo Rol')
@@ -10,7 +10,7 @@ let editedMisiones = reactive([])
 const showEdit = reactive([])
 
 const operativos = reactive([])
-const nombreMisiones = reactive([])
+const nombreMisiones = reactive({})
 const misiones = reactive([]) 
 onMounted(async () => {
     let res = await fetch("https://localhost:7208/api/Operativo").catch(error=>alert(`Error al cargar: ${error}`))
@@ -128,6 +128,10 @@ function mostrarEdit(id){
   showEdit[id] = true
   numEdit.value=id
 }
+
+const idsMisiones = computed(() => {
+  return Object.keys(editedMisiones)
+})
 
 </script>
 

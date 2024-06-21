@@ -1,5 +1,3 @@
-- Enumerados: Hacer que su input sea más correcto. Ejemplo: checkbox, radio buttons o select (HECHO)
-
-- Respecto a esto. También habría que darle una vuelta al tema de asignar misiones. Para crear una interfaz más clara (checkboxs)
-
 - (Opcional) Los cambios importantes, como borrar, deberían tener un dialogo de confirmación
+
+- Intentar hacer lo de editedAlgo con computed y Object.keys
