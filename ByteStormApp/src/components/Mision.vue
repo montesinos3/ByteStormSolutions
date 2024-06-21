@@ -1,22 +1,24 @@
 <script setup>
 import { ref, onMounted, reactive } from 'vue'
 
-let newDescripcion = ref('')
-let newEstado = ref('')
+const elems=[{title: 'Planificada', value:0}, {title: 'Activa', value:1}, {title: 'Completada', value:2}]
+
+let newDescripcion = ref('Nueva Mision')
+let newEstado = ref(elems[0].value)
 let newEquipos = ref([])
 let editedDescripciones = []
 let editedEstados = []
 let editedEquipos = reactive([])
 const showEdit = ref([])
 
-let misiones = reactive([])
+const misiones = reactive([])
 const nombreOperativos = ref()
 const nombreEquipos = reactive([])
 const equipos = reactive([]) 
 onMounted(async () => {
     let res = await fetch("https://localhost:7208/api/Misiones").catch(error=>alert(`Error al cargar: ${error}`))
     let data = await res.json()
-    misiones.value = data
+    data.forEach(item=>misiones.push(item))
 
     let resO = await fetch("https://localhost:7208/api/Operativo").catch(error=>alert(`Error al cargar: ${error}`))
     let dataO = await resO.json()
@@ -52,18 +54,18 @@ async function addMision() {
 
     if(aux.equipos){
       for(let e of aux.equipos){
-        let index=misiones.value.find(m=>m.equipos.find(eq=>e==eq)).equipos.indexOf(e)
-        misiones.value.find(m=>m.equipos.find(eq=>e==eq)).equipos.splice(index,1)
+        let index=misiones.find(m=>m.equipos.find(eq=>e==eq)).equipos.indexOf(e)
+        misiones.find(m=>m.equipos.find(eq=>e==eq)).equipos.splice(index,1)
       }
     }
       
 
-    misiones.value.push(data)
+    misiones.push(data)
   } else{
     alert("Error al crear mision")
   }
-  newDescripcion.value=''
-  newEstado.value=''
+  newDescripcion.value='Nueva Mision'
+  newEstado.value=elems[0].value
   newEquipos.value=''
 }
 
@@ -73,7 +75,7 @@ async function removeMision(id) {
   })
   if(res.status==204 || res.status==200){
     //eliminar todo por id
-    misiones.value = misiones.value.filter(o=>o.id != id)
+    delete misiones[id]
   } else{
     alert("Error al eliminar mision")
   }
@@ -83,7 +85,7 @@ async function editMision(mision) {
   let aux = { id: mision.id, 
     descripcion: (editedDescripciones[mision.id] ? editedDescripciones[mision.id] : mision.descripcion), 
     estado: (((editedEstados[mision.id] || editedEstados[mision.id]==0) && editedEstados[mision.id]!="") ? editedEstados[mision.id]: mision.estado),
-    equipos: (editedEquipos[mision.id] ?editedEquipos[mision.id] : null)
+    equipos: (editedEquipos[mision.id] ? editedEquipos[mision.id] : null)
   }
   let json={
     method: 'PUT',
@@ -95,13 +97,13 @@ async function editMision(mision) {
   let res = await fetch(`https://localhost:7208/api/Misiones/${mision.id}`, json).catch(error=>alert(error))
   
   if(res.status==204 || res.status==200){
-    misiones.value.find((m)=>m.id==mision.id).descripcion = aux.descripcion
-    misiones.value.find((m)=>m.id==mision.id).estado = aux.estado
+    misiones.find((m)=>m.id==mision.id).descripcion = aux.descripcion
+    misiones.find((m)=>m.id==mision.id).estado = aux.estado
     if(aux.equipos){
       for(let e of aux.equipos){
-        let index=misiones.value.find(o=>o.equipos.find(eq=>e==eq)).equipos.indexOf(e)
-        misiones.value.find(m=>m.equipos.find(eq=>eq==e)).equipos.splice(index,1)
-        misiones.value.find((m)=>m.id==mision.id).equipos.push(e)
+        let index=misiones.find(o=>o.equipos.find(eq=>e==eq)).equipos.indexOf(e)
+        misiones.find(m=>m.equipos.find(eq=>eq==e)).equipos.splice(index,1)
+        misiones.find((m)=>m.id==mision.id).equipos.push(e)
       }
     }
   } else{
@@ -109,10 +111,8 @@ async function editMision(mision) {
   }
   editedDescripciones[mision.id]=''
   editedEstados[mision.id]=''
-  editedEquipos[mision.id]=''
+  editedEquipos[mision.id]=[]
 }
-
-const elems=[{title: 'Planificada', value:0}, {title: 'Activa', value:1}, {title: 'Completada', value:2}]
 
 
 // for(let e of nombreEquipos.value){
@@ -157,6 +157,7 @@ function obtenerOperativo(idOperativo){
     <v-btn type="submit" class="mb-5">Añadir Mision</v-btn> 
   </form>
 
+
   <v-table height="315px" fixed-header>
     <thead>
       <tr>
@@ -168,7 +169,7 @@ function obtenerOperativo(idOperativo){
       </tr>
     </thead>
     <tbody>
-      <tr v-for="mision in misiones.value":key="mision.id">
+      <tr v-for="mision in misiones":key="mision.id">
         <td>{{ mision.id }}</td>
         <td>{{ mision.descripcion }}</td>
         <td>{{ elems.at(mision.estado).title }}</td>
@@ -198,7 +199,7 @@ function obtenerOperativo(idOperativo){
           <span class="mr-5">Equipos</span>
           <span class="mr-5">Id Operativo</span>
         </li>
-        <li v-for="mision in misiones.value" :key="mision.id">
+        <li v-for="mision in misiones" :key="mision.id">
           <span class="mx-5">{{ mision.id }}</span>
           <span class="mr-5">{{ mision.descripcion }}</span>
           <span class="mr-5">{{ mision.estado }}</span>

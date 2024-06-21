@@ -1,8 +1,8 @@
 <script setup>
 import { ref, onMounted, reactive } from 'vue'
 
-let newNombre = ref('')
-let newRol = ref('')
+let newNombre = ref('Nuevo Operativo')
+let newRol = ref('Nuevo Rol')
 let newMisiones = ref([])
 let editedNombres = []
 let editedRoles = []
@@ -15,7 +15,8 @@ const misiones = reactive([])
 onMounted(async () => {
     let res = await fetch("https://localhost:7208/api/Operativo").catch(error=>alert(`Error al cargar: ${error}`))
     let data = await res.json()
-    operativos.value = data
+    data.forEach(item => operativos.push(item))
+    
 
     let resM = await fetch("https://localhost:7208/api/Misiones").catch(error=>alert(`Error al cargar: ${error}`))
     let dataM = await resM.json()
@@ -47,14 +48,14 @@ async function addOperativo() {
 
     if(aux.misiones){
       for(let m of aux.misiones){
-        let index=operativos.value.find(o=>o.misiones.find(mis=>m==mis)).misiones.indexOf(m)
-        operativos.value.find(o=>o.misiones.find(mis=>m==mis)).misiones.splice(index,1)
+        let index=operativos.find(o=>o.misiones.find(mis=>m==mis)).misiones.indexOf(m)
+        operativos.find(o=>o.misiones.find(mis=>m==mis)).misiones.splice(index,1)
       }
     }
 
 
 
-    operativos.value.push(data)
+    operativos.push(data)
   } else{
     alert("Error al crear operativo")
   }
@@ -69,7 +70,7 @@ async function removeOperativo(id) {
   })
   if(res.status==204 || res.status==200){
     //eliminar todo por id
-    operativos.value = operativos.value.filter(o=>o.id != id)
+    delete operativos[id]
   } else{
     alert("Error al eliminar operativo")
   }
@@ -91,13 +92,13 @@ async function editOperativo(operativo) {
   let res = await fetch(`https://localhost:7208/api/Operativo/${operativo.id}`, json).catch(error=>alert(error))
   
   if(res.status==204 || res.status==200){
-    operativos.value.find((o)=>o.id==operativo.id).nombre = aux.nombre
-    operativos.value.find((o)=>o.id==operativo.id).rol = aux.rol
+    operativos.find((o)=>o.id==operativo.id).nombre = aux.nombre
+    operativos.find((o)=>o.id==operativo.id).rol = aux.rol
     if(aux.misiones){
       for(let m of aux.misiones){
-        let index=operativos.value.find(o=>o.misiones.find(mis=>m==mis)).misiones.indexOf(m)
-        operativos.value.find(o=>o.misiones.find(mis=>m==mis)).misiones.splice(index,1)
-        operativos.value.find((o)=>o.id==operativo.id).misiones.push(m)
+        let index=operativos.find(o=>o.misiones.find(mis=>m==mis)).misiones.indexOf(m)
+        operativos.find(o=>o.misiones.find(mis=>m==mis)).misiones.splice(index,1)
+        operativos.find((o)=>o.id==operativo.id).misiones.push(m)
       }
     }
   } else{
@@ -105,7 +106,7 @@ async function editOperativo(operativo) {
   }
   editedNombres[operativo.id]=''
   editedRoles[operativo.id]=''
-  editedMisiones[operativo.id]=''
+  editedMisiones[operativo.id]=[]
 }
 
 function obtenerNombres(idMisiones){
@@ -124,7 +125,7 @@ function obtenerNombres(idMisiones){
 
 <template>
   <form @submit.prevent="addOperativo" class="d-flex flex-column align-center">
-    <v-text-field v-model="newNombre" required placeholder="nuevo nombre para operativo" width="400"></v-text-field>
+    <v-text-field v-model="newNombre" required placeholder="nuevo nombre para operativo" width="400" default="Nuevo Operativo"></v-text-field>
     <v-text-field v-model="newRol" required placeholder="nuevo rol para operativo" width="400"></v-text-field>
     <v-select v-model="newMisiones" :items="misiones.value" density="comfortable" width="400" multiple label="Elige las misiones del operativo"></v-select>
     <v-btn type="submit" class="mb-5">Añadir Operativo</v-btn> 
@@ -141,7 +142,7 @@ function obtenerNombres(idMisiones){
       </tr>
     </thead>
     <tbody>
-      <tr v-for="operativo in operativos.value":key="operativo.id">
+      <tr v-for="operativo in operativos":key="operativo.id">
         <td>{{ operativo.id }}</td>
         <td>{{ operativo.nombre }}</td>
         <td>{{ operativo.rol }}</td>

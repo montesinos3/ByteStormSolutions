@@ -1,9 +1,13 @@
 <script setup>
 import { ref, onMounted, reactive } from 'vue'
 
-let newTipo = ref('')
-let newDescripcion = ref('')
-let newEstado = ref('')
+const es = [{title:'Disponible', value:0}, {title:'En Uso', value:1}]
+const ts = [{title:'Software', value:0}, {title:'Hardware', value:1}]
+
+
+let newTipo = ref(ts[0].value)
+let newDescripcion = ref('Nuevo Equipo')
+let newEstado = ref(es[0].value)
 let editedTipos = []
 let editedDescripciones = []
 let editedEstados = []
@@ -14,7 +18,7 @@ const nombreMisiones = reactive([])
 onMounted(async () => {
     let res = await fetch("https://localhost:7208/api/Equipos").catch(error=>alert(`Error al cargar: ${error}`))
     let data = await res.json()
-    equipos.value = data
+    data.forEach(item => equipos.push(item));
 
     let resM = await fetch("https://localhost:7208/api/Misiones").catch(error=>alert(`Error al cargar: ${error}`))
     let dataM = await resM.json()
@@ -34,13 +38,13 @@ async function addEquipo() {
   let response = await fetch("https://localhost:7208/api/Equipos", json).catch(error=>alert(error))
   if(response.status == 201 || response.status==200){
     let data = await response.json()
-    equipos.value.push(data)
+    equipos.push(data)
   } else{
     alert("Error al crear equipo")
   }
-  newDescripcion.value=''
-  newEstado.value=''
-  newTipo.value=''
+  newDescripcion.value='Nuevo Equipo'
+  newEstado.value=es[0].value
+  newTipo.value=ts[0].value
 }
 
 async function removeEquipo(id) {
@@ -49,7 +53,7 @@ async function removeEquipo(id) {
   })
   if(res.status==204 || res.status==200){
     //eliminar todo por id
-    equipos.value = equipos.value.filter(o=>o.id != id)
+    equipos = equipos.filter(o=>o.id != id)
   } else{
     alert("Error al eliminar equipo")
   }
@@ -74,9 +78,9 @@ async function editEquipo(equipo) {
   
   console.log(aux.tipo)
   if(res.status==204 || res.status==200){
-    equipos.value.find((o)=>o.id==equipo.id).descripcion = aux.descripcion
-    equipos.value.find((o)=>o.id==equipo.id).estado = aux.estado
-    equipos.value.find((o)=>o.id==equipo.id).tipo = aux.tipo
+    equipos.find((o)=>o.id==equipo.id).descripcion = aux.descripcion
+    equipos.find((o)=>o.id==equipo.id).estado = aux.estado
+    equipos.find((o)=>o.id==equipo.id).tipo = aux.tipo
   } else{
     alert("Error al editar equipo")
   }
@@ -84,9 +88,6 @@ async function editEquipo(equipo) {
   editedEstados[equipo.id]=''
   editedTipos[equipo.id]=''
 }
-
-const es = [{title:'Disponible', value:0}, {title:'En Uso', value:1}]
-const ts = [{title:'Software', value:0}, {title:'Hardware', value:1}]
 
 function obtenerMision(idMision){
   for(let m of nombreMisiones.value){
@@ -117,7 +118,7 @@ function obtenerMision(idMision){
       </tr>
     </thead>
     <tbody>
-      <tr v-for="equipo in equipos.value" :key="equipo.id">
+      <tr v-for="equipo in equipos" :key="equipo.id">
         <td>{{ equipo.id }}</td>
         <td>{{ equipo.descripcion }}</td>
         <td>{{ es.at(equipo.estado).title }}</td>
@@ -148,7 +149,7 @@ function obtenerMision(idMision){
           <span class="mr-5">Estado</span>
           <span class="mr-5">Mision</span>
         </li>
-        <li v-for="equipo in equipos.value" :key="equipo.id">
+        <li v-for="equipo in equipos" :key="equipo.id">
           <span class="mx-5">{{ equipo.id }}</span>
           <span class="mr-5">{{ equipo.descripcion }}</span>
           <span class="mr-5">{{ equipo.tipo }}</span>
