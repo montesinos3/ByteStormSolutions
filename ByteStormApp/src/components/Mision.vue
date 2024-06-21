@@ -9,7 +9,7 @@ let newEquipos = ref([])
 let editedDescripciones = []
 let editedEstados = []
 let editedEquipos = reactive([])
-const showEdit = ref([])
+const showEdit = reactive([])
 
 const misiones = reactive([])
 const nombreOperativos = ref()
@@ -75,7 +75,7 @@ async function removeMision(id) {
   })
   if(res.status==204 || res.status==200){
     //eliminar todo por id
-    delete misiones[id]
+    misiones.splice(misiones.indexOf(misiones.find(o=>o.id==id)),1)
   } else{
     alert("Error al eliminar mision")
   }
@@ -147,12 +147,19 @@ function obtenerOperativo(idOperativo){
   }
 }
 
+const numEdit=ref(0)
+
+function mostrarEdit(id){
+  showEdit[id] = true
+  numEdit.value=id
+}
+
 </script>
 
 <template>
   <form @submit.prevent="addMision" class="d-flex flex-column align-center">
-    <v-text-field v-model="newDescripcion" required placeholder="nuevo descripcion para mision" width="400"></v-text-field>
-    <v-select v-model="newEstado" required :items="elems" density="comfortable" width="400"></v-select>
+    <v-text-field v-model="newDescripcion" required label="Nueva descripcion para mision" width="400"></v-text-field>
+    <v-select v-model="newEstado" required :items="elems" density="comfortable" width="400" label="Elige el estado de la mision"></v-select>
     <v-select v-model="newEquipos" :items="equipos.value" density="comfortable" width="400" multiple label="Elige los equipos de la mision"></v-select>
     <v-btn type="submit" class="mb-5">Añadir Mision</v-btn> 
   </form>
@@ -176,20 +183,51 @@ function obtenerOperativo(idOperativo){
         <td>{{ obtenerNombresEquipos(mision.equipos).toString() }}</td>
         <td>{{ obtenerOperativo(mision.idOperativo) }}</td>
         <v-btn @click="removeMision(mision.id)" class="ml-5 bg-red">X</v-btn> 
-          <v-btn @click="showEdit[mision.id] = !showEdit[mision.id]" class="bg-green" append-icon="mdi-pencil"> <!-- Hacer una nueva pag/componente para el edit -->
-            <!-- <img src="@/assets/lapiz.png" alt="edit"> -->
-          </v-btn>
-          <td v-show="showEdit[mision.id]">
-            <v-form @submit.prevent="editMision(mision)" v-show="showEdit[mision.id]">
-            <v-text-field v-model="editedDescripciones[mision.id]" placeholder="Edita el descripcion de la mision" max-width="200"></v-text-field>
-            <v-select v-model="editedEstados[mision.id]" :items="elems" density="comfortable" max-width="200"></v-select>
-            <v-select v-model="editedEquipos[mision.id]" :items="equipos.value" density="comfortable" max-width="200" multiple></v-select>
-            <v-btn type="submit">Editar</v-btn> 
-          </v-form>
-          </td>
+        <v-btn @click="mostrarEdit(mision.id)" class="bg-green" append-icon="mdi-pencil">
+        </v-btn>
       </tr>
     </tbody>
   </v-table>
+
+  <div>
+    <v-dialog
+        v-model="showEdit[numEdit]"
+        max-width="600"
+    >
+      <v-card
+        prepend-icon="mdi-account"
+        title="User Profile"
+      >
+      <v-form @submit.prevent="editMision(misiones.find(e=>e.id==numEdit))">
+        <v-card-text>
+          <v-text-field v-model="editedDescripciones[numEdit]" placeholder="Edita el descripcion de la mision"></v-text-field>
+            <v-select v-model="editedEstados[numEdit]" :items="elems" density="comfortable"></v-select>
+            <v-select v-model="editedEquipos[numEdit]" :items="equipos.value" density="comfortable" multiple></v-select>
+          </v-card-text>
+          
+          <v-divider></v-divider>
+          
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn
+          text="Close"
+          variant="plain"
+          @click="showEdit[numEdit]=false"
+          ></v-btn>
+          
+          <v-btn
+            type="submit"
+            color="primary"
+            text="Save"
+            variant="tonal"
+            @click="showEdit[numEdit]=false"
+          ></v-btn>
+        </v-card-actions>
+      </v-form>
+      </v-card>
+    </v-dialog>
+</div>
 
     <!-- <ul> 
         <li>

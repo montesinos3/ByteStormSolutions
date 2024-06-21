@@ -1,17 +1,17 @@
 <script setup>
-import { ref, onMounted, reactive } from 'vue'
+import { ref, onMounted, reactive, computed } from 'vue'
 
 const es = [{title:'Disponible', value:0}, {title:'En Uso', value:1}]
 const ts = [{title:'Software', value:0}, {title:'Hardware', value:1}]
 
-
+let dialog=ref(false)
 let newTipo = ref(ts[0].value)
 let newDescripcion = ref('Nuevo Equipo')
 let newEstado = ref(es[0].value)
 let editedTipos = []
 let editedDescripciones = []
 let editedEstados = []
-const showEdit = ref([])
+const showEdit = reactive([])
 
 let equipos = reactive([])
 const nombreMisiones = reactive([])
@@ -53,14 +53,13 @@ async function removeEquipo(id) {
   })
   if(res.status==204 || res.status==200){
     //eliminar todo por id
-    equipos = equipos.filter(o=>o.id != id)
+    equipos.splice(equipos.indexOf(equipos.find(o=>o.id==id)),1)
   } else{
     alert("Error al eliminar equipo")
   }
 }
 
 async function editEquipo(equipo) {
-  console.log(editedTipos[equipo.id])
   let aux = { id: equipo.id, 
     descripcion: (editedDescripciones[equipo.id] ? editedDescripciones[equipo.id] : equipo.descripcion), 
     tipo: (((editedTipos[equipo.id] || editedTipos[equipo.id]==0 )&& editedTipos[equipo.id]!="") ? editedTipos[equipo.id]: equipo.tipo),
@@ -76,7 +75,6 @@ async function editEquipo(equipo) {
   let res = await fetch(`https://localhost:7208/api/Equipos/${equipo.id}`, json).catch(error=>alert(error))
   
   
-  console.log(aux.tipo)
   if(res.status==204 || res.status==200){
     equipos.find((o)=>o.id==equipo.id).descripcion = aux.descripcion
     equipos.find((o)=>o.id==equipo.id).estado = aux.estado
@@ -96,14 +94,20 @@ function obtenerMision(idMision){
     }
   }
 }
+const numEdit=ref(0)
+
+function mostrarEdit(id){
+  showEdit[id] = true
+  numEdit.value=id
+}
 
 </script>
 
 <template>
   <form @submit.prevent="addEquipo" class="d-flex flex-column align-center">
-    <v-text-field v-model="newDescripcion" required placeholder="nueva descripcion para equipo" width="400"></v-text-field>
-    <v-select v-model="newEstado" required :items="es" density="comfortable" width="400"></v-select>
-    <v-select v-model="newTipo" required :items="ts" density="comfortable" width="400"></v-select>
+    <v-text-field v-model="newDescripcion" required label="Nueva descripcion para equipo" width="400"></v-text-field>
+    <v-select v-model="newEstado" required :items="es" density="comfortable" width="400" label="Elige el estado del equipo"></v-select>
+    <v-select v-model="newTipo" required :items="ts" density="comfortable" width="400" label="Elige el tipo de equipo"></v-select>
     <v-btn type="submit" class="mb-5">Añadir Equipo</v-btn> 
   </form>
 
@@ -124,21 +128,51 @@ function obtenerMision(idMision){
         <td>{{ es.at(equipo.estado).title }}</td>
         <td>{{ ts.at(equipo.tipo).title }}</td>
         <td>{{ obtenerMision(equipo.idMision) }}</td>
-        <td><v-btn @click="removeEquipo(equipo.id)" class="ml-5 bg-red">X</v-btn> 
-          <v-btn @click="showEdit[equipo.id] = !showEdit[equipo.id]" class="bg-green" append-icon="mdi-pencil"> <!-- Hacer una nueva pag/componente para el edit -->
-            <!-- <img src="@/assets/lapiz.png" alt="edit"> -->
-          </v-btn></td>
-          <td v-show="showEdit[equipo.id]">
-            <v-form @submit.prevent="editEquipo(equipo)" v-show="showEdit[equipo.id]">
-              <v-text-field v-model="editedDescripciones[equipo.id]" placeholder="Edita la descripcion del equipo" max-width="400"></v-text-field>
-              <v-select v-model="editedEstados[equipo.id]" :items="es" density="comfortable" max-width="400"></v-select>
-              <v-select v-model="editedTipos[equipo.id]" :items="ts" density="comfortable" max-width="400"></v-select>
-              <v-btn type="submit">Editar</v-btn> 
-            </v-form>
-          </td>
+        <v-btn @click="removeEquipo(equipo.id)" class="ml-5 bg-red">X</v-btn> 
+          <v-btn @click="mostrarEdit(equipo.id)" class="bg-green" append-icon="mdi-pencil">
+          </v-btn>
       </tr>
     </tbody>
   </v-table>
+<div>
+    <v-dialog
+        v-model="showEdit[numEdit]"
+        max-width="600"
+    >
+      <v-card
+        prepend-icon="mdi-account"
+        title="User Profile"
+      >
+      <v-form @submit.prevent="editEquipo(equipos.find(e=>e.id==numEdit))">
+        <v-card-text>
+            <v-text-field v-model="editedDescripciones[numEdit]" placeholder="Edita la descripcion del equipo"></v-text-field>
+            <v-select v-model="editedEstados[numEdit]" :items="es" density="comfortable"></v-select>
+            <v-select v-model="editedTipos[numEdit]" :items="ts" density="comfortable"></v-select>
+          </v-card-text>
+          
+          <v-divider></v-divider>
+          
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn
+          text="Close"
+          variant="plain"
+          @click="showEdit[numEdit]=false"
+          ></v-btn>
+          
+          <v-btn
+            type="submit"
+            color="primary"
+            text="Save"
+            variant="tonal"
+            @click="showEdit[numEdit]=false"
+          ></v-btn>
+        </v-card-actions>
+      </v-form>
+      </v-card>
+    </v-dialog>
+</div>
 
 <!-- 
     <ul>  Probar a hacer una tabla 

@@ -7,7 +7,7 @@ let newMisiones = ref([])
 let editedNombres = []
 let editedRoles = []
 let editedMisiones = reactive([])
-const showEdit = ref([])
+const showEdit = reactive([])
 
 const operativos = reactive([])
 const nombreMisiones = reactive([])
@@ -59,9 +59,9 @@ async function addOperativo() {
   } else{
     alert("Error al crear operativo")
   }
-  newNombre.value=''
-  newRol.value=''
-  newMisiones.value=''
+  newNombre.value='Nuevo Operativo'
+  newRol.value='Nuevo Rol'
+  newMisiones.value=[]
 }
 
 async function removeOperativo(id) {
@@ -70,7 +70,8 @@ async function removeOperativo(id) {
   })
   if(res.status==204 || res.status==200){
     //eliminar todo por id
-    delete operativos[id]
+    
+    operativos.splice(operativos.indexOf(operativos.find(o=>o.id==id)),1)
   } else{
     alert("Error al eliminar operativo")
   }
@@ -121,12 +122,19 @@ function obtenerNombres(idMisiones){
   return nombres
 }
 
+const numEdit=ref(0)
+
+function mostrarEdit(id){
+  showEdit[id] = true
+  numEdit.value=id
+}
+
 </script>
 
 <template>
   <form @submit.prevent="addOperativo" class="d-flex flex-column align-center">
-    <v-text-field v-model="newNombre" required placeholder="nuevo nombre para operativo" width="400" default="Nuevo Operativo"></v-text-field>
-    <v-text-field v-model="newRol" required placeholder="nuevo rol para operativo" width="400"></v-text-field>
+    <v-text-field v-model="newNombre" required label="nuevo nombre para operativo" width="400"></v-text-field>
+    <v-text-field v-model="newRol" required label="nuevo rol para operativo" width="400"></v-text-field>
     <v-select v-model="newMisiones" :items="misiones.value" density="comfortable" width="400" multiple label="Elige las misiones del operativo"></v-select>
     <v-btn type="submit" class="mb-5">Añadir Operativo</v-btn> 
   </form>
@@ -149,20 +157,51 @@ function obtenerNombres(idMisiones){
         <td>{{ obtenerNombres(operativo.misiones).toString() }}</td>
 
         <v-btn @click="removeOperativo(operativo.id)" class="ml-5 bg-red">X</v-btn> 
-          <v-btn @click="showEdit[operativo.id] = !showEdit[operativo.id]" class="bg-green" append-icon="mdi-pencil"></v-btn>
-          <td v-show="showEdit[operativo.id]">
-            <v-form @submit.prevent="editOperativo(operativo)" v-show="showEdit[operativo.id]">
-            <v-text-field v-model="editedNombres[operativo.id]" placeholder="Edita el nombre del operativo" max-width="200"></v-text-field>
-            <v-text-field v-model="editedRoles[operativo.id]" placeholder="Edita el rol del operativo" max-width="200"></v-text-field>
-            <v-select v-model="editedMisiones[operativo.id]" :items="misiones.value" density="comfortable" multiple label="Añade misiones del operativo" max-width="200"></v-select>
-            <v-btn type="submit">Editar</v-btn> 
-            </v-form>
-          </td>
+        <v-btn @click="mostrarEdit(operativo.id)" class="bg-green" append-icon="mdi-pencil">
+        </v-btn>
       </tr>
     </tbody>
   </v-table>
 
+  <div>
+    <v-dialog
+        v-model="showEdit[numEdit]"
+        max-width="600"
+    >
+      <v-card
+        prepend-icon="mdi-account"
+        title="User Profile"
+      >
+      <v-form @submit.prevent="editOperativo(operativos.find(e=>e.id==numEdit))">
+        <v-card-text>
+            <v-text-field v-model="editedNombres[numEdit]" placeholder="Edita el nombre del operativo"></v-text-field>
+            <v-text-field v-model="editedRoles[numEdit]" placeholder="Edita el rol del operativo"></v-text-field>
+            <v-select v-model="editedMisiones[numEdit]" :items="misiones.value" density="comfortable" multiple label="Añade misiones del operativo"></v-select>
+          </v-card-text>
+          
+          <v-divider></v-divider>
+          
+        <v-card-actions>
+          <v-spacer></v-spacer>
 
+          <v-btn
+          text="Close"
+          variant="plain"
+          @click="showEdit[numEdit]=false"
+          ></v-btn>
+          
+          <v-btn
+            type="submit"
+            color="primary"
+            text="Save"
+            variant="tonal"
+            @click="showEdit[numEdit]=false"
+          ></v-btn>
+        </v-card-actions>
+      </v-form>
+      </v-card>
+    </v-dialog>
+</div>
 
 
     <!--<ul>  Probar a hacer una tabla 
