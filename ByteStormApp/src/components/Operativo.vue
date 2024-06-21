@@ -3,14 +3,15 @@ import { ref, onMounted, reactive } from 'vue'
 
 let newNombre = ref('')
 let newRol = ref('')
-let newMisiones = ref('')
+let newMisiones = ref([])
 let editedNombres = []
 let editedRoles = []
-let editedMisiones = reactive([''])
+let editedMisiones = reactive([])
 const showEdit = ref([])
 
 const operativos = reactive([])
 const nombreMisiones = reactive([])
+const misiones = reactive([]) 
 onMounted(async () => {
     let res = await fetch("https://localhost:7208/api/Operativo").catch(error=>alert(`Error al cargar: ${error}`))
     let data = await res.json()
@@ -19,10 +20,17 @@ onMounted(async () => {
     let resM = await fetch("https://localhost:7208/api/Misiones").catch(error=>alert(`Error al cargar: ${error}`))
     let dataM = await resM.json()
     nombreMisiones.value = dataM
+
+    misiones.value = nombreMisiones.value.map(m=>{ return {
+      title: m.descripcion,
+      value: m.id
+      };
+    });
+    console.log(misiones)
 })
 
 async function addOperativo() {
-  let mis = (newMisiones.value) ? JSON.parse(`[${newMisiones.value.replaceAll(" ","")}]`) : []
+  let mis = (newMisiones.value) ? newMisiones.value : []
   let aux = { nombre: newNombre.value, rol: newRol.value, misiones: mis}
   let json={
     method: 'POST',
@@ -71,7 +79,7 @@ async function editOperativo(operativo) {
   let aux = { id: operativo.id, 
     nombre: (editedNombres[operativo.id] ? editedNombres[operativo.id] : operativo.nombre), 
     rol: (editedRoles[operativo.id] ? editedRoles[operativo.id] : operativo.rol),
-    misiones: (editedMisiones[operativo.id] ? JSON.parse(`[${editedMisiones[operativo.id].replaceAll(" ","")}]`) : null)
+    misiones: (editedMisiones[operativo.id] ? editedMisiones[operativo.id] : null)
   }
   let json={
     method: 'PUT',
@@ -118,7 +126,7 @@ function obtenerNombres(idMisiones){
   <form @submit.prevent="addOperativo" class="d-flex flex-column align-center">
     <v-text-field v-model="newNombre" required placeholder="nuevo nombre para operativo" width="400"></v-text-field>
     <v-text-field v-model="newRol" required placeholder="nuevo rol para operativo" width="400"></v-text-field>
-    <v-text-field v-model="newMisiones" placeholder="ids de las misiones del operativo" width="400"></v-text-field>
+    <v-select v-model="newMisiones" :items="misiones.value" density="comfortable" width="400" multiple label="Elige las misiones del operativo"></v-select>
     <v-btn type="submit" class="mb-5">Añadir Operativo</v-btn> 
   </form>
 
@@ -143,9 +151,9 @@ function obtenerNombres(idMisiones){
           <v-btn @click="showEdit[operativo.id] = !showEdit[operativo.id]" class="bg-green" append-icon="mdi-pencil"></v-btn>
           <td v-show="showEdit[operativo.id]">
             <v-form @submit.prevent="editOperativo(operativo)" v-show="showEdit[operativo.id]">
-            <v-text-field v-model="editedNombres[operativo.id]" placeholder="Edita el nombre del operativo"></v-text-field>
-            <v-text-field v-model="editedRoles[operativo.id]" placeholder="Edita el rol del operativo"></v-text-field>
-            <v-text-field v-model="editedMisiones[operativo.id]" placeholder="Añade misiones al operativo"></v-text-field>
+            <v-text-field v-model="editedNombres[operativo.id]" placeholder="Edita el nombre del operativo" max-width="200"></v-text-field>
+            <v-text-field v-model="editedRoles[operativo.id]" placeholder="Edita el rol del operativo" max-width="200"></v-text-field>
+            <v-select v-model="editedMisiones[operativo.id]" :items="misiones.value" density="comfortable" multiple label="Añade misiones del operativo" max-width="200"></v-select>
             <v-btn type="submit">Editar</v-btn> 
             </v-form>
           </td>

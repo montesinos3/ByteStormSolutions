@@ -3,15 +3,16 @@ import { ref, onMounted, reactive } from 'vue'
 
 let newDescripcion = ref('')
 let newEstado = ref('')
-let newEquipos = ref('')
+let newEquipos = ref([])
 let editedDescripciones = []
 let editedEstados = []
-let editedEquipos = reactive([''])
+let editedEquipos = reactive([])
 const showEdit = ref([])
 
 let misiones = reactive([])
 const nombreOperativos = ref()
 const nombreEquipos = reactive([])
+const equipos = reactive([]) 
 onMounted(async () => {
     let res = await fetch("https://localhost:7208/api/Misiones").catch(error=>alert(`Error al cargar: ${error}`))
     let data = await res.json()
@@ -24,10 +25,18 @@ onMounted(async () => {
     let resE = await fetch("https://localhost:7208/api/Equipos").catch(error=>alert(`Error al cargar: ${error}`))
     let dataE = await resE.json()
     nombreEquipos.value = dataE
+
+    equipos.value = nombreEquipos.value.map(e=>{ return {
+      title: e.descripcion,
+      value: e.id
+      };
+    });
+    console.log(equipos)
+
 })
 
 async function addMision() {
-  let eq = (newEquipos.value) ? JSON.parse(`[${newEquipos.value.replaceAll(" ","")}]`) : []
+  let eq = (newEquipos.value) ? newEquipos.value : []
   let aux = { descripcion: newDescripcion.value, estado: newEstado.value, equipos: eq}
   let json={
     method: 'POST',
@@ -74,7 +83,7 @@ async function editMision(mision) {
   let aux = { id: mision.id, 
     descripcion: (editedDescripciones[mision.id] ? editedDescripciones[mision.id] : mision.descripcion), 
     estado: (((editedEstados[mision.id] || editedEstados[mision.id]==0) && editedEstados[mision.id]!="") ? editedEstados[mision.id]: mision.estado),
-    equipos: (editedEquipos[mision.id] ? JSON.parse(`[${editedEquipos[mision.id].replaceAll(" ","")}]`) : null)
+    equipos: (editedEquipos[mision.id] ?editedEquipos[mision.id] : null)
   }
   let json={
     method: 'PUT',
@@ -106,6 +115,18 @@ async function editMision(mision) {
 const elems=[{title: 'Planificada', value:0}, {title: 'Activa', value:1}, {title: 'Completada', value:2}]
 
 
+// for(let e of nombreEquipos.value){
+//   equipos.push({
+//     title: e.descripcion,
+//     value: e.id
+//   })
+// }
+
+// nombreEquipos.forEach((e)=>equipos.push({
+//     title: e.descripcion,
+//     value: e.id
+//   }))
+
 function obtenerNombresEquipos(idEquipos){
   let nombres = []
   for(let e of nombreEquipos.value){
@@ -126,14 +147,13 @@ function obtenerOperativo(idOperativo){
   }
 }
 
-
 </script>
 
 <template>
   <form @submit.prevent="addMision" class="d-flex flex-column align-center">
     <v-text-field v-model="newDescripcion" required placeholder="nuevo descripcion para mision" width="400"></v-text-field>
     <v-select v-model="newEstado" required :items="elems" density="comfortable" width="400"></v-select>
-    <v-text-field v-model="newEquipos" placeholder="ids de las equipos de la mision" width="400"></v-text-field>
+    <v-select v-model="newEquipos" :items="equipos.value" density="comfortable" width="400" multiple label="Elige los equipos de la mision"></v-select>
     <v-btn type="submit" class="mb-5">Añadir Mision</v-btn> 
   </form>
 
@@ -162,7 +182,7 @@ function obtenerOperativo(idOperativo){
             <v-form @submit.prevent="editMision(mision)" v-show="showEdit[mision.id]">
             <v-text-field v-model="editedDescripciones[mision.id]" placeholder="Edita el descripcion de la mision" max-width="200"></v-text-field>
             <v-select v-model="editedEstados[mision.id]" :items="elems" density="comfortable" max-width="200"></v-select>
-            <v-text-field v-model="editedEquipos[mision.id]" placeholder="Añade equipos a la mision" max-width="200"></v-text-field>
+            <v-select v-model="editedEquipos[mision.id]" :items="equipos.value" density="comfortable" max-width="200" multiple></v-select>
             <v-btn type="submit">Editar</v-btn> 
           </v-form>
           </td>
