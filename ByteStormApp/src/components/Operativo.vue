@@ -1,11 +1,12 @@
 <script setup>
+import { deleteOperativo, getMisiones, getOperativos, postOperativo, putOperativo } from '@/scripts/Operativo';
 import { ref, onMounted, reactive, computed } from 'vue'
 
 let newNombre = ref('Nuevo Operativo')
 let newRol = ref('Nuevo Rol')
 let newMisiones = ref([])
-let editedNombres = ''
-let editedRoles = ''
+let editedNombres = ref('')
+let editedRoles = ref('')
 let editedMisiones = ref([])
 const showEdit = reactive([])
 const numEdit=ref(0)
@@ -14,15 +15,9 @@ const operativos = reactive([])
 const nombreMisiones = reactive({})
 const misiones = reactive([]) 
 onMounted(async () => {
-    let res = await fetch("https://localhost:7208/api/Operativo").catch(error=>alert(`Error al cargar: ${error}`))
-    let data = await res.json()
-    data.forEach(item => operativos.push(item))
-    
-
-    let resM = await fetch("https://localhost:7208/api/Misiones").catch(error=>alert(`Error al cargar: ${error}`))
-    let dataM = await resM.json()
-    nombreMisiones.value = dataM
-
+    let x=await getOperativos()
+    x.forEach(item => operativos.push(item))
+    nombreMisiones.value = await getMisiones()
     misiones.value = nombreMisiones.value.map(m=>{ return {
       title: m.descripcion,
       value: m.id
@@ -33,18 +28,11 @@ onMounted(async () => {
 async function addOperativo() {
   let mis = (newMisiones.value) ? newMisiones.value : []
   let aux = { nombre: newNombre.value, rol: newRol.value, misiones: mis}
-  let json={
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json;charset=utf-8'
-    },
-    body: JSON.stringify(aux)
-  }
+  
 
-  let response = await fetch("https://localhost:7208/api/Operativo", json).catch(error=>alert(error))
+  let response = await postOperativo(aux)
   if(response.status == 201 || response.status==200){
     let data = await response.json()
-
 
     if(aux.misiones){
       for(let m of aux.misiones){
@@ -52,8 +40,6 @@ async function addOperativo() {
         operativos.find(o=>o.misiones.find(mis=>m==mis)).misiones.splice(index,1)
       }
     }
-
-
 
     operativos.push(data)
   } else{
@@ -65,9 +51,7 @@ async function addOperativo() {
 }
 
 async function removeOperativo(id) {
-  const res = await fetch(`https://localhost:7208/api/Operativo/${id}`, {
-    method: 'DELETE',
-  })
+  const res = await deleteOperativo(id)
   if(res.status==204 || res.status==200){
     //eliminar todo por id
     
@@ -79,18 +63,12 @@ async function removeOperativo(id) {
 
 async function editOperativo(operativo) {
   let aux = { id: operativo.id, 
-    nombre: (editedNombres ? editedNombres : operativo.nombre), 
-    rol: (editedRoles ? editedRoles : operativo.rol),
+    nombre: (editedNombres.value ? editedNombres.value : operativo.nombre), 
+    rol: (editedRoles.value ? editedRoles.value : operativo.rol),
     misiones: (editedMisiones.value ? editedMisiones.value : null)
   }
-  let json={
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json;charset=utf-8'
-    },
-    body: JSON.stringify(aux)
-  }
-  let res = await fetch(`https://localhost:7208/api/Operativo/${operativo.id}`, json).catch(error=>alert(error))
+  
+  let res = await putOperativo(aux)
   
   if(res.status==204 || res.status==200){
     operativos.find((o)=>o.id==operativo.id).nombre = aux.nombre
@@ -105,8 +83,8 @@ async function editOperativo(operativo) {
   } else{
     alert("Error al editar operativo")
   }
-  editedNombres=''
-  editedRoles=''
+  editedNombres.value=''
+  editedRoles.value=''
   editedMisiones.value=[]
 }
 
