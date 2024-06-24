@@ -4,10 +4,11 @@ import { ref, onMounted, reactive, computed } from 'vue'
 let newNombre = ref('Nuevo Operativo')
 let newRol = ref('Nuevo Rol')
 let newMisiones = ref([])
-let editedNombres = []
-let editedRoles = []
-let editedMisiones = reactive([])
+let editedNombres = ''
+let editedRoles = ''
+let editedMisiones = ref([])
 const showEdit = reactive([])
+const numEdit=ref(0)
 
 const operativos = reactive([])
 const nombreMisiones = reactive({})
@@ -27,7 +28,6 @@ onMounted(async () => {
       value: m.id
       };
     });
-    console.log(misiones)
 })
 
 async function addOperativo() {
@@ -79,9 +79,9 @@ async function removeOperativo(id) {
 
 async function editOperativo(operativo) {
   let aux = { id: operativo.id, 
-    nombre: (editedNombres[operativo.id] ? editedNombres[operativo.id] : operativo.nombre), 
-    rol: (editedRoles[operativo.id] ? editedRoles[operativo.id] : operativo.rol),
-    misiones: (editedMisiones[operativo.id] ? editedMisiones[operativo.id] : null)
+    nombre: (editedNombres ? editedNombres : operativo.nombre), 
+    rol: (editedRoles ? editedRoles : operativo.rol),
+    misiones: (editedMisiones.value ? editedMisiones.value : null)
   }
   let json={
     method: 'PUT',
@@ -105,9 +105,9 @@ async function editOperativo(operativo) {
   } else{
     alert("Error al editar operativo")
   }
-  editedNombres[operativo.id]=''
-  editedRoles[operativo.id]=''
-  editedMisiones[operativo.id]=[]
+  editedNombres=''
+  editedRoles=''
+  editedMisiones.value=[]
 }
 
 function obtenerNombres(idMisiones){
@@ -122,16 +122,13 @@ function obtenerNombres(idMisiones){
   return nombres
 }
 
-const numEdit=ref(0)
 
 function mostrarEdit(id){
-  showEdit[id] = true
-  numEdit.value=id
+  numEdit.value=operativos.indexOf(operativos.find(o=>id==o.id))
+  showEdit[numEdit.value] = true
 }
 
-const idsMisiones = computed(() => {
-  return Object.keys(editedMisiones)
-})
+
 
 </script>
 
@@ -169,18 +166,18 @@ const idsMisiones = computed(() => {
 
   <div>
     <v-dialog
-        v-model="showEdit[numEdit]"
-        max-width="600"
+    v-model="showEdit[numEdit]"
+    max-width="600"
     >
       <v-card
         prepend-icon="mdi-account"
         title="User Profile"
       >
-      <v-form @submit.prevent="editOperativo(operativos.find(e=>e.id==numEdit))">
+      <v-form @submit.prevent="editOperativo(operativos[numEdit])">
         <v-card-text>
-            <v-text-field v-model="editedNombres[numEdit]" placeholder="Edita el nombre del operativo"></v-text-field>
-            <v-text-field v-model="editedRoles[numEdit]" placeholder="Edita el rol del operativo"></v-text-field>
-            <v-select v-model="editedMisiones[numEdit]" :items="misiones.value" density="comfortable" multiple label="Añade misiones del operativo"></v-select>
+            <v-text-field v-model="editedNombres" placeholder="Edita el nombre del operativo"></v-text-field>
+            <v-text-field v-model="editedRoles" placeholder="Edita el rol del operativo"></v-text-field>
+            <v-select v-model="editedMisiones" :items="misiones.value" density="comfortable" multiple label="Añade misiones del operativo"></v-select>
           </v-card-text>
           
           <v-divider></v-divider>

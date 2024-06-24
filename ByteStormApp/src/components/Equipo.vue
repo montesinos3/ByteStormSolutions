@@ -8,9 +8,9 @@ let dialog=ref(false)
 let newTipo = ref(ts[0].value)
 let newDescripcion = ref('Nuevo Equipo')
 let newEstado = ref(es[0].value)
-let editedTipos = []
-let editedDescripciones = []
-let editedEstados = []
+let editedTipos = ''
+let editedDescripciones = ''
+let editedEstados = ''
 const showEdit = reactive([])
 
 let equipos = reactive([])
@@ -61,9 +61,9 @@ async function removeEquipo(id) {
 
 async function editEquipo(equipo) {
   let aux = { id: equipo.id, 
-    descripcion: (editedDescripciones[equipo.id] ? editedDescripciones[equipo.id] : equipo.descripcion), 
-    tipo: (((editedTipos[equipo.id] || editedTipos[equipo.id]==0 )&& editedTipos[equipo.id]!="") ? editedTipos[equipo.id]: equipo.tipo),
-    estado: (((editedEstados[equipo.id] || editedEstados[equipo.id]==0) && editedEstados[equipo.id]!="") ? editedEstados[equipo.id] : equipo.estado)
+    descripcion: (editedDescripciones ? editedDescripciones : equipo.descripcion), 
+    tipo: (((editedTipos || editedTipos==0 )&& editedTipos!="") ? editedTipos: equipo.tipo),
+    estado: (((editedEstados || editedEstados==0) && editedEstados!="") ? editedEstados : equipo.estado)
   }
   let json={
     method: 'PUT',
@@ -82,9 +82,9 @@ async function editEquipo(equipo) {
   } else{
     alert("Error al editar equipo")
   }
-  editedDescripciones[equipo.id]=''
-  editedEstados[equipo.id]=''
-  editedTipos[equipo.id]=''
+  editedDescripciones=''
+  editedEstados=''
+  editedTipos=''
 }
 
 function obtenerMision(idMision){
@@ -97,8 +97,8 @@ function obtenerMision(idMision){
 const numEdit=ref(0)
 
 function mostrarEdit(id){
-  showEdit[id] = true
-  numEdit.value=id
+  numEdit.value=equipos.indexOf(equipos.find(o=>id==o.id))
+  showEdit[numEdit.value] = true
 }
 
 </script>
@@ -143,11 +143,11 @@ function mostrarEdit(id){
         prepend-icon="mdi-account"
         title="User Profile"
       >
-      <v-form @submit.prevent="editEquipo(equipos.find(e=>e.id==numEdit))">
+      <v-form @submit.prevent="editEquipo(equipos[numEdit])">
         <v-card-text>
-            <v-text-field v-model="editedDescripciones[numEdit]" placeholder="Edita la descripcion del equipo"></v-text-field>
-            <v-select v-model="editedEstados[numEdit]" :items="es" density="comfortable"></v-select>
-            <v-select v-model="editedTipos[numEdit]" :items="ts" density="comfortable"></v-select>
+            <v-text-field v-model="editedDescripciones" placeholder="Edita la descripcion del equipo"></v-text-field>
+            <v-select v-model="editedEstados" :items="es" density="comfortable"></v-select>
+            <v-select v-model="editedTipos" :items="ts" density="comfortable"></v-select>
           </v-card-text>
           
           <v-divider></v-divider>

@@ -6,9 +6,9 @@ const elems=[{title: 'Planificada', value:0}, {title: 'Activa', value:1}, {title
 let newDescripcion = ref('Nueva Mision')
 let newEstado = ref(elems[0].value)
 let newEquipos = ref([])
-let editedDescripciones = []
-let editedEstados = []
-let editedEquipos = reactive([])
+let editedDescripciones = ''
+let editedEstados = ''
+let editedEquipos = ref([])
 const showEdit = reactive([])
 
 const misiones = reactive([])
@@ -83,9 +83,9 @@ async function removeMision(id) {
 
 async function editMision(mision) {
   let aux = { id: mision.id, 
-    descripcion: (editedDescripciones[mision.id] ? editedDescripciones[mision.id] : mision.descripcion), 
-    estado: (((editedEstados[mision.id] || editedEstados[mision.id]==0) && editedEstados[mision.id]!="") ? editedEstados[mision.id]: mision.estado),
-    equipos: (editedEquipos[mision.id] ? editedEquipos[mision.id] : null)
+    descripcion: (editedDescripciones ? editedDescripciones : mision.descripcion), 
+    estado: (((editedEstados || editedEstados==0) && editedEstados!="") ? editedEstados: mision.estado),
+    equipos: (editedEquipos.value ? editedEquipos.value : null)
   }
   let json={
     method: 'PUT',
@@ -109,9 +109,9 @@ async function editMision(mision) {
   } else{
     alert("Error al editar mision")
   }
-  editedDescripciones[mision.id]=''
-  editedEstados[mision.id]=''
-  editedEquipos[mision.id]=[]
+  editedDescripciones=''
+  editedEstados=''
+  editedEquipos.value=[]
 }
 
 
@@ -150,8 +150,8 @@ function obtenerOperativo(idOperativo){
 const numEdit=ref(0)
 
 function mostrarEdit(id){
-  showEdit[id] = true
-  numEdit.value=id
+  numEdit.value=misiones.indexOf(misiones.find(o=>id==o.id))
+  showEdit[numEdit.value] = true
 }
 
 </script>
@@ -198,11 +198,11 @@ function mostrarEdit(id){
         prepend-icon="mdi-account"
         title="User Profile"
       >
-      <v-form @submit.prevent="editMision(misiones.find(e=>e.id==numEdit))">
+      <v-form @submit.prevent="editMision(misiones[numEdit])">
         <v-card-text>
-          <v-text-field v-model="editedDescripciones[numEdit]" placeholder="Edita el descripcion de la mision"></v-text-field>
-            <v-select v-model="editedEstados[numEdit]" :items="elems" density="comfortable"></v-select>
-            <v-select v-model="editedEquipos[numEdit]" :items="equipos.value" density="comfortable" multiple></v-select>
+          <v-text-field v-model="editedDescripciones" placeholder="Edita el descripcion de la mision"></v-text-field>
+            <v-select v-model="editedEstados" :items="elems" density="comfortable"></v-select>
+            <v-select v-model="editedEquipos" :items="equipos.value" density="comfortable" multiple></v-select>
           </v-card-text>
           
           <v-divider></v-divider>
