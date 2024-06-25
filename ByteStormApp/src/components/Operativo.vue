@@ -1,5 +1,5 @@
 <script setup>
-import { deleteOperativo, getMisiones, getOperativos, postOperativo, putOperativo } from '@/scripts/Operativo';
+import { deleteOperativo, getMisiones, getOperativos, postOperativo, putOperativo } from '@/scripts/LlamadasApi';
 import { ref, onMounted, reactive, computed } from 'vue'
 
 let newNombre = ref('Nuevo Operativo')
@@ -54,7 +54,6 @@ async function removeOperativo(id) {
   const res = await deleteOperativo(id)
   if(res.status==204 || res.status==200){
     //eliminar todo por id
-    
     operativos.splice(operativos.indexOf(operativos.find(o=>o.id==id)),1)
   } else{
     alert("Error al eliminar operativo")

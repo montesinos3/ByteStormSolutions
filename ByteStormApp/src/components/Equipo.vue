@@ -1,4 +1,5 @@
 <script setup>
+import { deleteEquipo, getEquipos, getMisiones, postEquipo, putEquipo } from '@/scripts/LlamadasApi';
 import { ref, onMounted, reactive, computed } from 'vue'
 
 const es = [{title:'Disponible', value:0}, {title:'En Uso', value:1}]
@@ -16,26 +17,17 @@ const showEdit = reactive([])
 let equipos = reactive([])
 const nombreMisiones = reactive([])
 onMounted(async () => {
-    let res = await fetch("https://localhost:7208/api/Equipos").catch(error=>alert(`Error al cargar: ${error}`))
-    let data = await res.json()
+    let data = await getEquipos()
     data.forEach(item => equipos.push(item));
 
-    let resM = await fetch("https://localhost:7208/api/Misiones").catch(error=>alert(`Error al cargar: ${error}`))
-    let dataM = await resM.json()
+    let dataM = await getMisiones()
     nombreMisiones.value = dataM
 })
 
 async function addEquipo() {
   let aux = { descripcion: newDescripcion.value, tipo: newTipo.value, estado: newEstado.value}
-  let json={
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json;charset=utf-8'
-    },
-    body: JSON.stringify(aux)
-  }
-
-  let response = await fetch("https://localhost:7208/api/Equipos", json).catch(error=>alert(error))
+  
+  let response = await postEquipo(aux)
   if(response.status == 201 || response.status==200){
     let data = await response.json()
     equipos.push(data)
@@ -48,9 +40,7 @@ async function addEquipo() {
 }
 
 async function removeEquipo(id) {
-  const res = await fetch(`https://localhost:7208/api/Equipos/${id}`, {
-    method: 'DELETE',
-  })
+  const res = await deleteEquipo(id)
   if(res.status==204 || res.status==200){
     //eliminar todo por id
     equipos.splice(equipos.indexOf(equipos.find(o=>o.id==id)),1)
@@ -65,14 +55,8 @@ async function editEquipo(equipo) {
     tipo: (((editedTipos || editedTipos==0 )&& editedTipos!="") ? editedTipos: equipo.tipo),
     estado: (((editedEstados || editedEstados==0) && editedEstados!="") ? editedEstados : equipo.estado)
   }
-  let json={
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json;charset=utf-8'
-    },
-    body: JSON.stringify(aux)
-  }
-  let res = await fetch(`https://localhost:7208/api/Equipos/${equipo.id}`, json).catch(error=>alert(error))
+  
+  let res = await putEquipo(aux)
   
   
   if(res.status==204 || res.status==200){

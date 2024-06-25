@@ -1,4 +1,5 @@
 <script setup>
+import { deleteMision, getEquipos, getMisiones, getOperativos, postMision, putMision } from '@/scripts/LlamadasApi';
 import { ref, onMounted, reactive } from 'vue'
 
 const elems=[{title: 'Planificada', value:0}, {title: 'Activa', value:1}, {title: 'Completada', value:2}]
@@ -16,16 +17,13 @@ const nombreOperativos = ref()
 const nombreEquipos = reactive([])
 const equipos = reactive([]) 
 onMounted(async () => {
-    let res = await fetch("https://localhost:7208/api/Misiones").catch(error=>alert(`Error al cargar: ${error}`))
-    let data = await res.json()
+    let data = await getMisiones()
     data.forEach(item=>misiones.push(item))
 
-    let resO = await fetch("https://localhost:7208/api/Operativo").catch(error=>alert(`Error al cargar: ${error}`))
-    let dataO = await resO.json()
+    let dataO = await getOperativos()
     nombreOperativos.value = dataO
 
-    let resE = await fetch("https://localhost:7208/api/Equipos").catch(error=>alert(`Error al cargar: ${error}`))
-    let dataE = await resE.json()
+    let dataE = await getEquipos()
     nombreEquipos.value = dataE
 
     equipos.value = nombreEquipos.value.map(e=>{ return {
@@ -40,15 +38,8 @@ onMounted(async () => {
 async function addMision() {
   let eq = (newEquipos.value) ? newEquipos.value : []
   let aux = { descripcion: newDescripcion.value, estado: newEstado.value, equipos: eq}
-  let json={
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json;charset=utf-8'
-    },
-    body: JSON.stringify(aux)
-  }
 
-  let response = await fetch("https://localhost:7208/api/Misiones", json).catch(error=>alert(error))
+  let response = await postMision(aux)
   if(response.status == 201 || response.status==200){
     let data = await response.json()
 
@@ -70,9 +61,7 @@ async function addMision() {
 }
 
 async function removeMision(id) {
-  const res = await fetch(`https://localhost:7208/api/Misiones/${id}`, {
-    method: 'DELETE',
-  })
+  const res = await deleteMision(id)
   if(res.status==204 || res.status==200){
     //eliminar todo por id
     misiones.splice(misiones.indexOf(misiones.find(o=>o.id==id)),1)
@@ -87,14 +76,7 @@ async function editMision(mision) {
     estado: (((editedEstados || editedEstados==0) && editedEstados!="") ? editedEstados: mision.estado),
     equipos: (editedEquipos.value ? editedEquipos.value : null)
   }
-  let json={
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json;charset=utf-8'
-    },
-    body: JSON.stringify(aux)
-  }
-  let res = await fetch(`https://localhost:7208/api/Misiones/${mision.id}`, json).catch(error=>alert(error))
+  let res = await putMision(aux)
   
   if(res.status==204 || res.status==200){
     misiones.find((m)=>m.id==mision.id).descripcion = aux.descripcion
