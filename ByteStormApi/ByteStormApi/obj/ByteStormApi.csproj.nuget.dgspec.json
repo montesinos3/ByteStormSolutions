@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\ByteStormApi.csproj": {}
+    "C:\\Users\\Jorge\\OneDrive\\Escritorio\\Universidad\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\ByteStormApi.csproj": {}
   },
   "projects": {
-    "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\ByteStormApi.csproj": {
+    "C:\\Users\\Jorge\\OneDrive\\Escritorio\\Universidad\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\ByteStormApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\ByteStormApi.csproj",
+        "projectUniqueName": "C:\\Users\\Jorge\\OneDrive\\Escritorio\\Universidad\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\ByteStormApi.csproj",
         "projectName": "ByteStormApi",
-        "projectPath": "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\ByteStormApi.csproj",
-        "packagesPath": "C:\\Users\\jormo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\jormo\\Desktop\\jorge\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\obj\\",
+        "projectPath": "C:\\Users\\Jorge\\OneDrive\\Escritorio\\Universidad\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\ByteStormApi.csproj",
+        "packagesPath": "C:\\Users\\Jorge\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Jorge\\OneDrive\\Escritorio\\Universidad\\Practicas\\ByteStormSolutions\\ByteStormApi\\ByteStormApi\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\jormo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Jorge\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -84,7 +84,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.302/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
