@@ -1,29 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ByteStormApi.Models;
+using ByteStormApi.Repositories;
+using SQLitePCL;
 
 namespace ByteStormApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-
 public class MisionesController : ControllerBase
 {
-    private readonly ByteStormContext _context;
+    private readonly IMisionRepository _repo;
 
-    public MisionesController(ByteStormContext context)
+    public MisionesController(IMisionRepository repo)
     {
-        _context = context;
+        _repo = repo;
     }
 
     // GET: api/Misiones
     [HttpGet]
     public async Task<ActionResult<IEnumerable<MisionDTO>>> GetMisiones()
     {
-        return await _context.Misiones
-            .Include(m => m.Equipos)
-            .Select(X=>ItemToDTO(X))
-            .ToListAsync();
+        return await _repo.GetAllAsync();
     }
 
     // GET: api/Misiones/5
@@ -31,14 +29,12 @@ public class MisionesController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<MisionDTO>> GetMision(long id)
     {
-        var mision = await _context.Misiones.FindAsync(id);
-
+        var mision = await _repo.GetById(id);
         if (mision == null)
         {
             return NotFound();
         }
-
-        return ItemToDTO(mision);
+        return mision;
     }
     // </snippet_GetByID>
 
@@ -53,62 +49,20 @@ public class MisionesController : ControllerBase
             return BadRequest();
         }
 
-        var mision = await _context.Misiones.Where(m=>m.Id==id).Include(m => m.Equipos).FirstOrDefaultAsync();
-        if (mision == null)
+        var mision = await _repo.Update(misionDTO, id);
+        if (mision == "notfound")
         {
             return NotFound();
         }
-
-        if (misionDTO.Descripcion != null){
-            mision.Descripcion = misionDTO.Descripcion;
-        }
-        if (misionDTO.Estado != null){
-            if (misionDTO.Estado == EstadoM.Planificada || misionDTO.Estado == EstadoM.Activa || misionDTO.Estado == EstadoM.Completada)
-            {
-                mision.Estado = misionDTO.Estado;
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
-        if (misionDTO.IdOperativo != null){
-            mision.IdOperativo = misionDTO.IdOperativo;
-        }
-
-        if (misionDTO.Equipos != null)
+        else if (mision == "badRequest")
         {
-            if (misionDTO.Equipos.Count > 0)
-            {
-                for (int i = 0; i < misionDTO.Equipos.Count; i++)
-                {
-                    if (misionDTO.Equipos[i] != null)
-                    {
-                        var aux = _context.Equipos.Find(misionDTO.Equipos[i]);
-                        if (aux != null)
-                        {
-                            if (mision.Equipos != null)
-                                mision.Equipos.Add(aux);
-                        }
-                        else
-                        {
-                            return BadRequest();
-                        }
-                    }
-                }
-            }
+            return BadRequest();
         }
-
-        try
+        else if (mision == "noContent")
         {
-            await _context.SaveChangesAsync();
+            return NoContent();
         }
-        catch (DbUpdateConcurrencyException) when (!MisionExists(id))
-        {
-            return NotFound();
-        }
-
-        return NoContent();
+        return Ok();
     }
     // </snippet_Update>
 
@@ -118,47 +72,16 @@ public class MisionesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<MisionDTO>> PostMision(MisionDTO misionDTO)
     {
-        var mision = new Mision
+        var mision = await _repo.Insert(misionDTO);
+        if (mision == null)
         {
-            Descripcion = misionDTO.Descripcion,
-            IdOperativo = misionDTO.IdOperativo
-        };
-        if (misionDTO.Estado != null)
-        {
-            if (misionDTO.Estado != EstadoM.Planificada && misionDTO.Estado != EstadoM.Activa && misionDTO.Estado != EstadoM.Completada)
-            {
-                return BadRequest();
-            }
+            return BadRequest();
         }
-        mision.Estado = misionDTO.Estado;
-
-        mision.Equipos = new List<Equipo>();
-        if(misionDTO.Equipos != null)
-        {
-            if (misionDTO.Equipos.Count > 0)
-            {
-                for (int i = 0; i < misionDTO.Equipos.Count; i++)
-                {
-                    var aux = _context.Equipos.Find(misionDTO.Equipos[i]);
-                    if (aux != null)
-                    {
-                        mision.Equipos.Add(aux);
-                    }
-                    else
-                    {
-                        return BadRequest();
-                    }
-                }
-            }
-        }
-
-        _context.Misiones.Add(mision);
-        await _context.SaveChangesAsync();
 
         return CreatedAtAction(
             nameof(GetMision),
             new { id = mision.Id },
-            ItemToDTO(mision)
+            mision
             );
     }
     // </snippet_Create>
@@ -167,44 +90,11 @@ public class MisionesController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteMision(long id)
     {
-        var mision = await _context.Misiones.FindAsync(id);
-        if (mision == null)
+        var mision = await _repo.Delete(id);
+        if (mision == false)
         {
             return NotFound();
         }
-
-        _context.Misiones.Remove(mision);
-        await _context.SaveChangesAsync();
-
         return NoContent();
-    }
-
-    private bool MisionExists(long id)
-    {
-        return _context.Misiones.Any(m => m.Id == id);
-    }
-
-    private static MisionDTO ItemToDTO(Mision mision)
-    {
-        var misionDTO = new MisionDTO
-        {
-            Id = mision.Id,
-            Descripcion = mision.Descripcion,
-            Estado = mision.Estado,
-            IdOperativo = mision.IdOperativo
-        };
-        if (misionDTO.Equipos == null)
-        {
-            misionDTO.Equipos = new List<long>();
-        }
-        if (mision.Equipos != null)
-        {
-            for (int i = 0; i < mision.Equipos.Count; i++)
-            {
-                misionDTO.Equipos.Add(mision.Equipos[i].Id);
-            }
-        }
-        return misionDTO;
-
     }
 }

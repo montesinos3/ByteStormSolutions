@@ -1,31 +1,56 @@
 ﻿using ByteStormApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace ByteStormApi.Repositories
 {
     public interface IOperativoRepository
     {
-        Task<Operativo> Insert(Operativo entity);
+        Task<OperativoDTO> Insert(OperativoDTO operativoDTO);
         Task<OperativoDTO?> GetById(long id);
         Task<ActionResult<IEnumerable<OperativoDTO>>> GetAllAsync();
-        void Update(Operativo entity);
+        Task<string> Update(OperativoDTO operativoDTO, long id);
         Task<bool> Delete(long id);
     }
 
-    public abstract class RepoOperativos : IOperativoRepository
+    public class RepoOperativos : IOperativoRepository
     {
         private readonly ByteStormContext _context;
-        protected RepoOperativos(ByteStormContext context)
+        public RepoOperativos(ByteStormContext context)
         {
             _context = context;
         }
 
-        public async Task<Operativo> Insert(Operativo entity)
+        public async Task<OperativoDTO> Insert(OperativoDTO operativoDTO)
         {
-            EntityEntry<Operativo> insertedValue = await _context.Set<Operativo>().AddAsync(entity);
-            return insertedValue.Entity;
+            var operativo = new Operativo
+            {
+                Rol = operativoDTO.Rol,
+                Nombre = operativoDTO.Nombre,
+            };
+            operativo.Misiones = new List<Mision>();
+            if (operativoDTO.Misiones != null)
+            {
+                if (operativoDTO.Misiones.Count > 0)
+                {
+                    for (int i = 0; i < operativoDTO.Misiones.Count; i++)
+                    {
+                        var aux = await _context.Misiones.FindAsync(operativoDTO.Misiones[i]);
+                        if (aux != null)
+                        {
+                            operativo.Misiones.Add(aux);
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                }
+            }
+            _context.Operativos.Add(operativo);
+            await _context.SaveChangesAsync();
+
+            return ItemToDTO(operativo);
         }
 
         public virtual async Task<OperativoDTO?> GetById(long id){
@@ -45,18 +70,65 @@ namespace ByteStormApi.Repositories
                     .Select(x => ItemToDTO(x))
                     .ToListAsync();
 
-        public void Update(Operativo entity)
+        public async Task<string> Update(OperativoDTO operativoDTO, long id)
         {
-            //entity.LastUpdateUtc = DateTime.UtcNow;
-            //_context.Set<Operativo>().Update(entity);
+            var operativo = await _context.Operativos.Where(o => o.Id == id).Include(o => o.Misiones).FirstOrDefaultAsync();
+            if (operativo == null)
+            {
+                return "notfound";
+            }
+
+            if (operativoDTO.Nombre != null)
+                operativo.Nombre = operativoDTO.Nombre;
+            if (operativoDTO.Rol != null)
+                operativo.Rol = operativoDTO.Rol;
+
+            if (operativoDTO.Misiones != null)
+            {
+                if (operativoDTO.Misiones.Count > 0)
+                {
+                    for (int i = 0; i < operativoDTO.Misiones.Count; i++)
+                    {
+                        if (operativo.Misiones != null)
+                        {
+                            var aux = await _context.Misiones.FindAsync(operativoDTO.Misiones[i]);
+                            if (aux != null)
+                            {
+                                if (operativo.Misiones != null)
+                                    operativo.Misiones.Add(aux);
+                            }
+                            else
+                            {
+                                return "badRequest";
+                            }
+                        }
+                    }
+                }
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException) when (!OperativoExists(id))
+            {
+                return "notfound";
+            }
+
+            return "noContent";
         }
 
         public async Task<bool> Delete(long id)
         {
-            //Operativo? entity = await GetById(id);
-            //if (entity is null)
-            //    return false;
-            //_context.Set<Operativo>().Remove(entity);
+            var operativo = await _context.Operativos.FindAsync(id);
+            if (operativo == null)
+            {
+                return false;
+            }
+
+            _context.Operativos.Remove(operativo);
+            await _context.SaveChangesAsync();
+
             return true;
         }
         private static OperativoDTO ItemToDTO(Operativo operativo)
@@ -80,6 +152,10 @@ namespace ByteStormApi.Repositories
                 }
             }
             return operativoDTO;
+        }
+        private bool OperativoExists(long id)
+        {
+            return _context.Operativos.Any(o => o.Id == id);
         }
     }
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ByteStormApi.Models;
+using ByteStormApi.Repositories;
 
 namespace ByteStormApi.Controllers;
 
@@ -9,11 +10,11 @@ namespace ByteStormApi.Controllers;
 
 public class EquiposController : ControllerBase
 {
-    private readonly ByteStormContext _context;
+    private readonly IEquipoRepository _repo;
 
-    public EquiposController(ByteStormContext context)
+    public EquiposController(IEquipoRepository repo)
     {
-        _context = context;
+        _repo = repo;
     }
 
 
@@ -22,9 +23,7 @@ public class EquiposController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<EquipoDTO>>> GetEquipos()
     {
-        return await _context.Equipos
-            .Select(x => ItemToDTO(x))
-            .ToListAsync();
+        return await _repo.GetAllAsync();
     }
 
     // GET: api/Equipos/5
@@ -32,14 +31,12 @@ public class EquiposController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<EquipoDTO>> GetEquipo(long id)
     {
-        var equipo = await _context.Equipos.FindAsync(id);
-
+        var equipo = await _repo.GetById(id);
         if (equipo == null)
         {
             return NotFound();
         }
-
-        return ItemToDTO(equipo);
+        return equipo;
     }
     // </snippet_GetByID>
 
@@ -54,47 +51,20 @@ public class EquiposController : ControllerBase
             return BadRequest();
         }
 
-        var equipo = await _context.Equipos.FindAsync(id);
-        if (equipo == null)
+        var equipo = await _repo.Update(equipoDTO, id);
+        if (equipo == "notfound")
         {
             return NotFound();
         }
-
-        if(equipoDTO.Descripcion != null)
-            equipo.Descripcion = equipoDTO.Descripcion;
-        if (equipoDTO.Estado != null){
-            if (equipoDTO.Estado == Estado.EnUso || equipoDTO.Estado == Estado.Disponible)
-            {
-                equipo.Estado = equipoDTO.Estado;
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
-        if (equipoDTO.Tipo != null){
-            if (equipoDTO.Tipo == Tipo.Software || equipoDTO.Tipo == Tipo.Hardware)
-            {
-                equipo.Tipo = equipoDTO.Tipo;
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
-        if (equipoDTO.IdMision != null)
-            equipo.IdMision = equipoDTO.IdMision;
-
-        try
+        else if (equipo == "badRequest")
         {
-            await _context.SaveChangesAsync();
+            return BadRequest();
         }
-        catch (DbUpdateConcurrencyException) when (!EquipoExists(id))
+        else if (equipo == "noContent")
         {
-            return NotFound();
+            return NoContent();
         }
-
-        return NoContent();
+        return Ok();
     }
     // </snippet_Update>
 
@@ -104,36 +74,16 @@ public class EquiposController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<EquipoDTO>> PostEquipo(EquipoDTO equipoDTO)
     {
-        var equipo = new Equipo
+        var equipo = await _repo.Insert(equipoDTO);
+        if (equipo == null)
         {
-            Descripcion = equipoDTO.Descripcion,
-            Tipo = equipoDTO.Tipo,
-            IdMision = equipoDTO.IdMision
-        };
-        if (equipoDTO.Estado != null)
-        {
-            if (equipoDTO.Estado != Estado.EnUso && equipoDTO.Estado != Estado.Disponible)
-            {
-                return BadRequest();
-            }
+            return BadRequest();
         }
-        equipo.Estado = equipoDTO.Estado;
-        if (equipoDTO.Tipo != null)
-        {
-            if (equipoDTO.Tipo != Tipo.Software && equipoDTO.Tipo != Tipo.Hardware)
-            {
-                return BadRequest();
-            }
-        }
-        equipo.Tipo = equipoDTO.Tipo;
-
-        _context.Equipos.Add(equipo);
-        await _context.SaveChangesAsync();
 
         return CreatedAtAction(
             nameof(GetEquipo),
             new { id = equipo.Id },
-            ItemToDTO(equipo)
+            equipo
             );
     }
     // </snippet_Create>
@@ -142,30 +92,12 @@ public class EquiposController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteEquipo(long id)
     {
-        var equipo = await _context.Equipos.FindAsync(id);
-        if (equipo == null)
+        var equipo = await _repo.Delete(id);
+        if (equipo == false)
         {
             return NotFound();
         }
-
-        _context.Equipos.Remove(equipo);
-        await _context.SaveChangesAsync();
-
         return NoContent();
     }
 
-    private bool EquipoExists(long id)
-    {
-        return _context.Equipos.Any(e => e.Id == id);
-    }
-
-    private static EquipoDTO ItemToDTO(Equipo equipo) =>
-       new EquipoDTO
-       {
-           Id = equipo.Id,
-           Tipo = equipo.Tipo,
-           Descripcion = equipo.Descripcion,
-           Estado = equipo.Estado,
-           IdMision = equipo.IdMision
-       };
 }

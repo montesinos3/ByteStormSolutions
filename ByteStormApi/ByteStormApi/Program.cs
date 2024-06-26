@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ByteStormApi.Models;
 using System.Text.Json.Serialization;
+using ByteStormApi.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -19,6 +20,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ByteStormContext>((optionsBuilder) =>
             optionsBuilder.UseSqlite(builder.Configuration.GetConnectionString("ApiDatabase")));
+builder.Services.AddScoped<IOperativoRepository, RepoOperativos>();
+builder.Services.AddScoped<IMisionRepository, RepoMisiones>();
+builder.Services.AddScoped<IEquipoRepository, RepoEquipos>();
 
 builder.Services.AddCors(options =>
 {
